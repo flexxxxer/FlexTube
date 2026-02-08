@@ -22,14 +22,14 @@ git clone https://github.com/libre-tube/LibreTube && cd LibreTube
 git reset --hard $(cat ../misc/target-commit.txt)
 ```
 
-4. App rename in resources (in translations too) from "LibreTube" to "FlexTube": 
-```
-bash ../scripts/app-rename-in-resources.sh $(pwd)/app/src/main/res
-```
-
-5. Apply FlexTube's patches: 
+4. Apply FlexTube's patches: 
 ```
 git apply ../patches/*
+```
+
+5. App rename in resources (in translations too) from "LibreTube" to "FlexTube": 
+```
+bash ../scripts/app-rename-in-resources.sh $(pwd)/app/src/main/res
 ```
 
 6. Create `keystore.properties` file with following content:
