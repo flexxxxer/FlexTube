@@ -15,6 +15,7 @@
 - [Features](#-features)
 - [Privacy Policy and Disclaimer](#-privacy-policy-and-disclaimer)
 - [Contributing](#-contributing)
+- [Build](#-build)
 - [License](#-license)
 
 # Installation
@@ -55,6 +56,9 @@ Consider to help [LibreTube](https://github.com/libre-tube/LibreTube) in first p
 
 Please make sure the title of your pull request and the commit messages follow the [conventional commit types](https://github.com/commitizen/conventional-commit-types/blob/master/index.json) (e.g. `feat: support for xy`).
 For instance, the most common commit types are "feat", "fix", "refactor", "ci" and "chore".
+
+# Build
+Follow [BUILD.md](https://github.com/flexxxxer/FlexTube/blob/master/misc/BUILD.md)
 
 # License
 FlexTube is [Free Software](https://en.wikipedia.org/wiki/Free_software): You can use, study, share and modify it at your will. The app can be redistributed and/or modified under the terms of the
