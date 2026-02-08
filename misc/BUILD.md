@@ -41,4 +41,4 @@ If you dont have keystore yet then create one with `keytool` CLI utility or foll
 ./gradlew assembleRelease --no-daemon
 ```
 
-Artefact (apk file) will be in `./app/build/outputs/apk/release/app-release.apk`
+Artifact (apk file) will be in `./app/build/outputs/apk/release/app-release.apk`
