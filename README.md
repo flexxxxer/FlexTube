@@ -30,6 +30,8 @@ Verification info:
 - Package ID: `com.github.flextube`
 - SHA-256 signing certificate hash: `01:5D:5A:FA:1D:21:22:54:9A:6A:4B:74:D4:12:E4:D9:9D:77:20:38:74:46:41:CC:61:32:2A:BE:20:59:DD:33`
 
+Verification info can also be found on [Telegram post](https://t.me/flextube/3).
+
 # Features
 - [x] All [LibreTube features](https://github.com/libre-tube/LibreTube?tab=readme-ov-file#features)
 - [x] Ability to hide little brainrot videos aka "Shorts" (opt-out)
