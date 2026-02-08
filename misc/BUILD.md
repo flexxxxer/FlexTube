@@ -1,6 +1,11 @@
 ### Build
 Process is straightforward. 
-Environment: JDK 17.
+Environment: JDK 17. Common env variables:
+```
+export ANDROID_HOME=/usr/lib/jvm/java-17-openjdk; \
+export ANDROID_SDK_ROOT=$ANDROID_HOME; \
+export JAVA_HOME=$ANDROID_HOME
+```
 
 1. Getting FlexTube's sources: 
 ```
