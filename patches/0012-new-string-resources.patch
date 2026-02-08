@@ -1,0 +1,38 @@
+---
+ app/src/main/res/values/strings.xml | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+index c3cb9351d..91fe8d30f 100644
+--- a/app/src/main/res/values/strings.xml
++++ b/app/src/main/res/values/strings.xml
+@@ -578,4 +578,26 @@
+     <string name="also_clear_watch_positions">Also clear watch positions</string>
+     <string name="import_temp_playlist">Import temporary playlist?</string>
+     <string name="import_temp_playlist_summary">Do you want to create a new playlist named \'%1$s\'? The playlist will contain %2$d videos.</string>
++    <string name="flextube_settings">FlexTube specific</string>
++    <string name="flextube_settings_summary">FlexTube\'s specific settings</string>
++    <string name="show_brainrot_videos">Show \"Shorts\"</string>
++    <string name="show_brainrot_videos_summary">Little brainrot videos aka \"Shorts\" visibility</string>
++    <string name="show_comment_section">Show comment section</string>
++    <string name="show_like_dislike_buttons">Show like &amp; dislike buttons</string>
++    <string name="show_counters">Show counters</string>
++    <string name="show_counters_summary">Show likes count, view count, etc</string>
++    <string name="icon_only_video_bottom_actions">Icon-only video bottom actions</string>
++    <string name="icon_only_video_bottom_actions_summary">Bottom video actions shown without text</string>
++    <string name="automatically_expand_comments">Automatically expand comments</string>
++    <string name="automatically_expand_comments_summary">Expand comments when opening a video</string>
++    <string name="automatically_expand_description">Automatically expand description</string>
++    <string name="automatically_expand_description_summary">Expand description when opening a video</string>
++    <string name="dismissed_channels_list">Dismissed channels</string>
++    <string name="dismissed_channels_list_summary">Modify...</string>
++    <string name="dismissed_channel">Dismissed channel</string>
++    <string name="add_dismissed_channel">Dismiss channel</string>
++    <string name="remove_dismissed_channel">Keep channel</string>
++    <string name="exactly_channel_id">Channel ID (exactly)</string>
++    <string name="suggestion_use_dismiss_button_on_channel_page">Or just use \"Dismiss channel\" button on channel page</string>
++    <string name="invalid_channel_id">Provided Channel Id is incorrect or non-existent</string>
+ </resources>
+-- 
+2.52.0
+

@@ -1,0 +1,43 @@
+---
+ .../github/libretube/ui/fragments/PlayerFragment.kt    |  3 +++
+ .../com/github/libretube/ui/views/DescriptionLayout.kt | 10 ++++++++++
+ 2 files changed, 13 insertions(+)
+
+diff --git a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
+index 67fedda63..a6d82e0c3 100644
+--- a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
++++ b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
+@@ -1180,6 +1180,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), OnlinePlayerOptions {
+         binding.descriptionLayout.setStreams(streams)
+ 
+         toggleVideoInfoVisibility(true)
++        if (PlayerHelper.automaticallyExpandDescriptionEnabled) {
++            binding.descriptionLayout.uncollapseDescription()
++        }
+ 
+         binding.apply {
+             ImageHelper.loadImage(streams.uploaderAvatar, binding.playerChannelImage, true)
+diff --git a/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt b/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
+index b94539bbc..95e412a93 100644
+--- a/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
++++ b/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
+@@ -122,6 +122,16 @@ class DescriptionLayout(
+         }
+     }
+ 
++    /**
++     * Uncollapses the description, if it is currently expanded.
++     */
++    fun uncollapseDescription() {
++        val isCollapsed = binding.descLinLayout.isGone
++        if (isCollapsed) {
++            toggleDescription()
++        }
++    }
++
+     /**
+      * Set up the description text with video links and timestamps
+      */
+-- 
+2.52.0
+

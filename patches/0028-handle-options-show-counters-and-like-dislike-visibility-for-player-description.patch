@@ -1,0 +1,84 @@
+---
+ .../libretube/ui/views/DescriptionLayout.kt   | 42 ++++++++++---------
+ 1 file changed, 23 insertions(+), 19 deletions(-)
+
+diff --git a/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt b/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
+index 95e412a93..931ef85c0 100644
+--- a/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
++++ b/app/src/main/java/com/github/libretube/ui/views/DescriptionLayout.kt
+@@ -22,6 +22,7 @@ import com.github.libretube.ui.activities.VideoTagsAdapter
+ import com.github.libretube.util.HtmlParser
+ import com.github.libretube.util.LinkHandler
+ import com.github.libretube.util.TextUtils
++import kotlinx.datetime.Instant
+ import java.util.Locale
+ 
+ class DescriptionLayout(
+@@ -67,13 +68,14 @@ class DescriptionLayout(
+     fun setStreams(streams: Streams) {
+         this.streams = streams
+ 
+-        val views = streams.views.formatShort()
+-        val date = TextUtils.formatRelativeDate(streams.uploaded ?: -1L)
+         binding.run {
+-            playerViewsInfo.text = context.getString(R.string.normal_views, views, TextUtils.SEPARATOR + date)
++            updatePlayerViewsInfo(streams.views, streams.uploaded, streams.uploadTimestamp, false)
+ 
++            val isLikeVisible = PlayerHelper.showCountersEnabled && PlayerHelper.showLikeDislikeButtonsEnabled
++            val isDislikeVisible = streams.dislikes >= 0 && isLikeVisible
+             textLike.text = streams.likes.formatShort()
+-            textDislike.isVisible = streams.dislikes >= 0
++            textLike.isVisible = isLikeVisible
++            textDislike.isVisible = isDislikeVisible
+             textDislike.text = streams.dislikes.formatShort()
+ 
+             playerTitle.text = streams.title
+@@ -153,21 +155,7 @@ class DescriptionLayout(
+         val streams = streams ?: return
+ 
+         val isNewStateExpanded = binding.descLinLayout.isGone
+-        if (!isNewStateExpanded) {
+-            // show a short version of the view count and date
+-            val formattedDate = TextUtils.formatRelativeDate(streams.uploaded ?: -1L)
+-            binding.playerViewsInfo.text = context.getString(R.string.normal_views, streams.views.formatShort(),  TextUtils.SEPARATOR + formattedDate)
+-
+-            // limit the title height to two lines
+-            binding.playerTitle.maxLines = 2
+-        } else {
+-            // show the full view count and upload date
+-            val formattedDate = streams.uploadTimestamp?.let { TextUtils.localizeInstant(it) }.orEmpty()
+-            binding.playerViewsInfo.text = context.getString(R.string.normal_views, "%,d".format(streams.views),  TextUtils.SEPARATOR + formattedDate)
+-
+-            // show the whole title
+-            binding.playerTitle.maxLines = Int.MAX_VALUE
+-        }
++        updatePlayerViewsInfo(streams.views, streams.uploaded, streams.uploadTimestamp);
+ 
+         binding.playerDescriptionArrow.animate()
+             .rotation(if (isNewStateExpanded) 180F else 0F)
+@@ -178,6 +166,22 @@ class DescriptionLayout(
+         binding.descLinLayout.isVisible = isNewStateExpanded
+     }
+ 
++    private fun updatePlayerViewsInfo(views: Long, uploaded: Long?, uploadTimestamp: Instant?, isGone: Boolean? = null) {
++        val isNewStateExpanded = isGone ?: binding.descLinLayout.isGone
++        val formattedDate = if (isNewStateExpanded)
++            uploadTimestamp?.let { TextUtils.localizeInstant(it) }.orEmpty()
++            else TextUtils.formatUploadDate(uploaded ?: -1L)
++        val formattedViews = if (isNewStateExpanded)
++            "%,d".format(views)
++            else views.formatShort()
++
++        binding.playerViewsInfo.text = if (PlayerHelper.showCountersEnabled)
++            context.getString(R.string.normal_views, formattedViews, TextUtils.SEPARATOR + formattedDate)
++            else formattedDate
++
++        binding.playerTitle.maxLines = if (isNewStateExpanded) Int.MAX_VALUE else 2
++    }
++
+     companion object {
+         private const val ANIMATION_DURATION = 250L
+         private const val SB_SPONSOR_CATEGORY = "sponsor_category"
+-- 
+2.52.0
+

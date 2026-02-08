@@ -1,0 +1,59 @@
+---
+ .../com/github/libretube/ui/activities/AboutActivity.kt   | 8 +++-----
+ .../com/github/libretube/ui/activities/HelpActivity.kt    | 5 +----
+ 2 files changed, 4 insertions(+), 9 deletions(-)
+
+diff --git a/app/src/main/java/com/github/libretube/ui/activities/AboutActivity.kt b/app/src/main/java/com/github/libretube/ui/activities/AboutActivity.kt
+index 562a9063f..4a86a0233 100644
+--- a/app/src/main/java/com/github/libretube/ui/activities/AboutActivity.kt
++++ b/app/src/main/java/com/github/libretube/ui/activities/AboutActivity.kt
+@@ -29,10 +29,8 @@ class AboutActivity : BaseActivity() {
+             onBackPressedDispatcher.onBackPressed()
+         }
+ 
+-        setupCard(binding.donate, DONATE_URL)
+         setupCard(binding.website, WEBSITE_URL)
+         setupCard(binding.piped, PIPED_GITHUB_URL)
+-        setupCard(binding.translate, WEBLATE_URL)
+         setupCard(binding.github, GITHUB_URL)
+ 
+         binding.license.setOnClickListener {
+@@ -109,9 +107,9 @@ class AboutActivity : BaseActivity() {
+     }
+ 
+     companion object {
+-        const val DONATE_URL = "https://github.com/libre-tube/LibreTube#donate"
+-        private const val WEBSITE_URL = "https://libretube.dev"
+-        const val GITHUB_URL = "https://github.com/libre-tube/LibreTube"
++        const val DONATE_URL = "https://github.com/flexxxxer/FlexTube#donate"
++        private const val WEBSITE_URL = "https://github.com/flexxxxer/FlexTube"
++        const val GITHUB_URL = "https://github.com/flexxxxer/FlexTube"
+         private const val PIPED_GITHUB_URL = "https://github.com/TeamPiped/Piped"
+         private const val WEBLATE_URL = "https://hosted.weblate.org/projects/libretube/libretube/"
+         private const val LICENSE_URL = "https://gnu.org/"
+diff --git a/app/src/main/java/com/github/libretube/ui/activities/HelpActivity.kt b/app/src/main/java/com/github/libretube/ui/activities/HelpActivity.kt
+index c5d5c9dc7..82bb9d733 100644
+--- a/app/src/main/java/com/github/libretube/ui/activities/HelpActivity.kt
++++ b/app/src/main/java/com/github/libretube/ui/activities/HelpActivity.kt
+@@ -18,9 +18,6 @@ class HelpActivity : BaseActivity() {
+         }
+ 
+         setupCard(binding.faq, FAQ_URL)
+-        setupCard(binding.matrix, MATRIX_URL)
+-        setupCard(binding.mastodon, MASTODON_URL)
+-        setupCard(binding.lemmy, LEMMY_URL)
+     }
+ 
+     private fun setupCard(card: MaterialCardView, link: String) {
+@@ -30,7 +27,7 @@ class HelpActivity : BaseActivity() {
+     }
+ 
+     companion object {
+-        private const val FAQ_URL = "https://libretube.dev/#faq"
++        private const val FAQ_URL = "https://github.com/flexxxxer/FlexTube#faq"
+         private const val MATRIX_URL = "https://matrix.to/#/#LibreTube:matrix.org"
+         private const val MASTODON_URL = "https://fosstodon.org/@libretube"
+         private const val LEMMY_URL = "https://feddit.rocks/c/libretube"
+-- 
+2.52.0
+

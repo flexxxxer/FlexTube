@@ -1,0 +1,182 @@
+---
+ .../preferences/FlexTubeSpecificSettings.kt   | 24 +++++++
+ .../libretube/ui/preferences/MainSettings.kt  |  3 +-
+ app/src/main/res/navigation/nav_settings.xml  | 11 +++
+ app/src/main/res/xml/flextube_settings.xml    | 68 +++++++++++++++++++
+ app/src/main/res/xml/settings.xml             | 10 +++
+ 5 files changed, 115 insertions(+), 1 deletion(-)
+ create mode 100644 app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
+ create mode 100644 app/src/main/res/xml/flextube_settings.xml
+
+diff --git a/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt b/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
+new file mode 100644
+index 000000000..18d33696a
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
+@@ -0,0 +1,24 @@
++package com.github.libretube.ui.preferences
++
++import android.os.Build
++import android.os.Bundle
++import androidx.core.app.ActivityCompat
++import androidx.fragment.app.activityViewModels
++import androidx.preference.ListPreference
++import androidx.preference.Preference
++import com.github.libretube.R
++import com.github.libretube.constants.PreferenceKeys
++import com.github.libretube.helpers.ImageHelper
++import com.github.libretube.helpers.LocaleHelper
++import com.github.libretube.helpers.PreferenceHelper
++import com.github.libretube.ui.base.BasePreferenceFragment
++import com.github.libretube.ui.dialogs.RequireRestartDialog
++import com.github.libretube.ui.models.InstancesModel
++import com.google.android.material.dialog.MaterialAlertDialogBuilder
++import kotlin.getValue
++
++class FlexTubeSpecificSettings : BasePreferenceFragment() {
++    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
++        setPreferencesFromResource(R.xml.flextube_settings, rootKey)
++    }
++}
+diff --git a/app/src/main/java/com/github/libretube/ui/preferences/MainSettings.kt b/app/src/main/java/com/github/libretube/ui/preferences/MainSettings.kt
+index 72285da7d..6896d6024 100644
+--- a/app/src/main/java/com/github/libretube/ui/preferences/MainSettings.kt
++++ b/app/src/main/java/com/github/libretube/ui/preferences/MainSettings.kt
+@@ -47,7 +47,8 @@ class MainSettings : BasePreferenceFragment() {
+             "audio_video" to R.id.action_global_audioVideoSettings,
+             "history" to R.id.action_global_historySettings,
+             "notifications" to R.id.action_global_notificationSettings,
+-            "backup_restore" to R.id.action_global_backupRestoreSettings
++            "backup_restore" to R.id.action_global_backupRestoreSettings,
++            "flextube_settings" to R.id.action_global_flextubeSettings
+         ).forEach { (preferenceKey, actionId) ->
+             findPreference<Preference>(preferenceKey)?.setOnPreferenceClickListener { _ ->
+                 findNavController().navigate(actionId)
+diff --git a/app/src/main/res/navigation/nav_settings.xml b/app/src/main/res/navigation/nav_settings.xml
+index 6b546c7c3..3df301247 100644
+--- a/app/src/main/res/navigation/nav_settings.xml
++++ b/app/src/main/res/navigation/nav_settings.xml
+@@ -47,6 +47,10 @@
+         android:id="@+id/sponsorBlockSettings"
+         android:name="com.github.libretube.ui.preferences.SponsorBlockSettings"
+         android:label="@string/sponsorblock" />
++    <fragment
++        android:id="@+id/flextubeSettings"
++        android:name="com.github.libretube.ui.preferences.FlexTubeSpecificSettings"
++        android:label="@string/flextube_settings" />
+ 
+     <action
+         android:id="@+id/action_global_generalSettings"
+@@ -120,5 +124,12 @@
+         app:popEnterAnim="@animator/nav_default_pop_enter_anim"
+         app:popExitAnim="@animator/nav_default_pop_exit_anim" />
+ 
++    <action
++        android:id="@+id/action_global_flextubeSettings"
++        app:destination="@id/flextubeSettings"
++        app:enterAnim="@animator/nav_default_enter_anim"
++        app:exitAnim="@animator/nav_default_exit_anim"
++        app:popEnterAnim="@animator/nav_default_pop_enter_anim"
++        app:popExitAnim="@animator/nav_default_pop_exit_anim" />
+ 
+ </navigation>
+\ No newline at end of file
+diff --git a/app/src/main/res/xml/flextube_settings.xml b/app/src/main/res/xml/flextube_settings.xml
+new file mode 100644
+index 000000000..acccd8c64
+--- /dev/null
++++ b/app/src/main/res/xml/flextube_settings.xml
+@@ -0,0 +1,68 @@
++<?xml version="1.0" encoding="utf-8"?>
++<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto">
++
++    <PreferenceCategory app:title="@string/search_hint">
++
++        <SwitchPreferenceCompat
++            android:defaultValue="false"
++            android:icon="@drawable/ic_list"
++            android:summary="@string/show_brainrot_videos_summary"
++            android:title="@string/show_brainrot_videos"
++            app:key="flextube_show_shorts_toggle" />
++
++        <Preference
++            android:icon="@drawable/ic_awesome"
++            app:summary="@string/dismissed_channels_list_summary"
++            app:title="@string/dismissed_channels_list"
++            app:key="flextube_dismissed_channels_list" />
++
++    </PreferenceCategory>
++
++    <PreferenceCategory app:title="@string/player">
++
++        <SwitchPreferenceCompat
++            android:defaultValue="false"
++            android:icon="@drawable/ic_settings"
++            android:summary="@string/icon_only_video_bottom_actions_summary"
++            android:title="@string/icon_only_video_bottom_actions"
++            app:key="flextube_icon_only_video_bottom_actions_toggle" />
++
++        <SwitchPreferenceCompat
++            android:defaultValue="true"
++            android:icon="@drawable/ic_settings"
++            android:summary="@string/show_counters_summary"
++            android:title="@string/show_counters"
++            app:key="flextube_show_counters_toggle" />
++
++        <SwitchPreferenceCompat
++            android:defaultValue="true"
++            android:icon="@drawable/ic_settings"
++            android:dependency="flextube_show_counters_toggle"
++            android:title="@string/show_like_dislike_buttons"
++            app:key="flextube_show_like_dislike_toggle" />
++
++        <SwitchPreferenceCompat
++            android:defaultValue="true"
++            android:icon="@drawable/ic_settings"
++            android:title="@string/show_comment_section"
++            app:key="flextube_show_comment_section_toggle" />
++
++        <SwitchPreferenceCompat
++            android:defaultValue="false"
++            android:icon="@drawable/ic_settings"
++            android:dependency="flextube_show_comment_section_toggle"
++            android:summary="@string/automatically_expand_comments_summary"
++            android:title="@string/automatically_expand_comments"
++            app:key="flextube_automatically_expand_comments_toggle" />
++
++        <SwitchPreferenceCompat
++            android:defaultValue="false"
++            android:icon="@drawable/ic_settings"
++            android:summary="@string/automatically_expand_description_summary"
++            android:title="@string/automatically_expand_description"
++            app:key="flextube_automatically_expand_description_toggle" />
++
++    </PreferenceCategory>
++
++</PreferenceScreen>
+\ No newline at end of file
+diff --git a/app/src/main/res/xml/settings.xml b/app/src/main/res/xml/settings.xml
+index d45867649..49de1c392 100644
+--- a/app/src/main/res/xml/settings.xml
++++ b/app/src/main/res/xml/settings.xml
+@@ -56,6 +56,16 @@
+         app:summary="@string/backup_restore_summary"
+         app:title="@string/backup_restore" />
+ 
++    <PreferenceCategory>
++
++        <Preference
++            android:icon="@drawable/ic_settings"
++            app:key="flextube_settings"
++            app:summary="@string/flextube_settings_summary"
++            app:title="@string/flextube_settings" />
++
++    </PreferenceCategory>
++
+     <PreferenceCategory>
+ 
+         <Preference
+-- 
+2.52.0
+

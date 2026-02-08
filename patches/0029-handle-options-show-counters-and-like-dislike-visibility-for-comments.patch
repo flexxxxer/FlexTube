@@ -1,0 +1,90 @@
+---
+ .../github/libretube/ui/adapters/CommentsPagingAdapter.kt   | 4 +++-
+ .../github/libretube/ui/fragments/CommentsMainFragment.kt   | 6 +++++-
+ .../libretube/ui/fragments/CommentsRepliesFragment.kt       | 6 +++++-
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/app/src/main/java/com/github/libretube/ui/adapters/CommentsPagingAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/CommentsPagingAdapter.kt
+index ac6540725..b83a4afa7 100644
+--- a/app/src/main/java/com/github/libretube/ui/adapters/CommentsPagingAdapter.kt
++++ b/app/src/main/java/com/github/libretube/ui/adapters/CommentsPagingAdapter.kt
+@@ -15,6 +15,7 @@ import com.github.libretube.api.obj.Comment
+ import com.github.libretube.databinding.CommentsRowBinding
+ import com.github.libretube.extensions.formatShort
+ import com.github.libretube.helpers.ImageHelper
++import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.helpers.ThemeHelper
+ import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
+ import com.github.libretube.ui.viewholders.CommentViewHolder
+@@ -64,6 +65,7 @@ class CommentsPagingAdapter(
+                 ?.parseAsHtml(tagHandler = HtmlParser(linkHandler))
+ 
+             ImageHelper.loadImage(comment.thumbnail, commentorImage, true)
++            likesTextView.isVisible = PlayerHelper.showCountersEnabled && PlayerHelper.showLikeDislikeButtonsEnabled
+             likesTextView.text = comment.likeCount.formatShort()
+ 
+             if (comment.creatorReplied && !channelAvatar.isNullOrBlank()) {
+@@ -78,7 +80,7 @@ class CommentsPagingAdapter(
+             pinnedImageView.isVisible = comment.pinned
+             heartedImageView.isVisible = comment.hearted
+             repliesCount.isVisible = !isReplies && comment.repliesPage != null
+-            repliesCount.text = if (comment.replyCount > 0) comment.replyCount.formatShort() else null
++            repliesCount.text = if (comment.replyCount > 0 && PlayerHelper.showCountersEnabled) comment.replyCount.formatShort() else null
+ 
+             commentorImage.setOnClickListener {
+                 navigateToChannel(comment)
+diff --git a/app/src/main/java/com/github/libretube/ui/fragments/CommentsMainFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/CommentsMainFragment.kt
+index 95d098c99..3bab6aa03 100644
+--- a/app/src/main/java/com/github/libretube/ui/fragments/CommentsMainFragment.kt
++++ b/app/src/main/java/com/github/libretube/ui/fragments/CommentsMainFragment.kt
+@@ -18,6 +18,7 @@ import com.github.libretube.constants.IntentData
+ import com.github.libretube.databinding.FragmentCommentsBinding
+ import com.github.libretube.extensions.formatShort
+ import com.github.libretube.helpers.NavigationHelper
++import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.ui.adapters.CommentsPagingAdapter
+ import com.github.libretube.ui.models.CommentsViewModel
+ import com.github.libretube.ui.sheets.CommentsSheet
+@@ -114,9 +115,12 @@ class CommentsMainFragment : Fragment(R.layout.fragment_comments) {
+         viewModel.commentCountLiveData.observe(viewLifecycleOwner) { commentCount ->
+             if (commentCount == null) return@observe
+ 
++            val commentsSheetTitle = if (PlayerHelper.showCountersEnabled)
++                getString(R.string.comments_count, commentCount.formatShort())
++                else getString(R.string.comments)
+             commentsSheet?.updateFragmentInfo(
+                 false,
+-                getString(R.string.comments_count, commentCount.formatShort())
++                commentsSheetTitle
+             )
+         }
+     }
+diff --git a/app/src/main/java/com/github/libretube/ui/fragments/CommentsRepliesFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/CommentsRepliesFragment.kt
+index 7a2a0d060..df19bd760 100644
+--- a/app/src/main/java/com/github/libretube/ui/fragments/CommentsRepliesFragment.kt
++++ b/app/src/main/java/com/github/libretube/ui/fragments/CommentsRepliesFragment.kt
+@@ -21,6 +21,7 @@ import com.github.libretube.databinding.FragmentCommentsBinding
+ import com.github.libretube.extensions.formatShort
+ import com.github.libretube.extensions.parcelable
+ import com.github.libretube.helpers.NavigationHelper
++import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.ui.adapters.CommentsPagingAdapter
+ import com.github.libretube.ui.models.CommentRepliesViewModel
+ import com.github.libretube.ui.models.CommentsViewModel
+@@ -56,9 +57,12 @@ class CommentsRepliesFragment : Fragment(R.layout.fragment_comments) {
+                 setFragmentResult(CommentsSheet.DISMISS_SHEET_REQUEST_KEY, Bundle.EMPTY)
+             }
+         )
++        val commentsSheetTitle = if (PlayerHelper.showCountersEnabled)
++            "${getString(R.string.replies)} (${requireArguments().parcelable<Comment>(IntentData.comment)!!.replyCount.formatShort()})"
++            else getString(R.string.replies)
+         commentsSheet?.updateFragmentInfo(
+             true,
+-            "${getString(R.string.replies)} (${requireArguments().parcelable<Comment>(IntentData.comment)!!.replyCount.formatShort()})"
++            commentsSheetTitle
+         )
+ 
+         binding.commentsRV.updatePadding(top = 0)
+-- 
+2.52.0
+

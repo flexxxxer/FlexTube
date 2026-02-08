@@ -1,0 +1,111 @@
+---
+ .../com/github/libretube/db/AppDatabase.kt    | 10 ++++++-
+ .../libretube/db/dao/DismissedChannelDao.kt   | 30 +++++++++++++++++++
+ .../libretube/db/obj/DismissedChannel.kt      | 16 ++++++++++
+ 3 files changed, 55 insertions(+), 1 deletion(-)
+ create mode 100644 app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt
+ create mode 100644 app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
+
+diff --git a/app/src/main/java/com/github/libretube/db/AppDatabase.kt b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
+index fb07cb488..e9758f22b 100644
+--- a/app/src/main/java/com/github/libretube/db/AppDatabase.kt
++++ b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
+@@ -5,6 +5,7 @@ import androidx.room.Database
+ import androidx.room.RoomDatabase
+ import androidx.room.TypeConverters
+ import com.github.libretube.db.dao.CustomInstanceDao
++import com.github.libretube.db.dao.DismissedChannelDao
+ import com.github.libretube.db.dao.DownloadDao
+ import com.github.libretube.db.dao.LocalPlaylistsDao
+ import com.github.libretube.db.dao.LocalSubscriptionDao
+@@ -15,6 +16,7 @@ import com.github.libretube.db.dao.SubscriptionsFeedDao
+ import com.github.libretube.db.dao.WatchHistoryDao
+ import com.github.libretube.db.dao.WatchPositionDao
+ import com.github.libretube.db.obj.CustomInstance
++import com.github.libretube.db.obj.DismissedChannel
+ import com.github.libretube.db.obj.Download
+ import com.github.libretube.db.obj.DownloadChapter
+ import com.github.libretube.db.obj.DownloadItem
+@@ -46,7 +48,8 @@ import com.github.libretube.db.obj.WatchPosition
+         DownloadPlaylist::class,
+         DownloadPlaylistVideosCrossRef::class,
+         SubscriptionGroup::class,
+-        SubscriptionsFeedItem::class
++        SubscriptionsFeedItem::class,
++        DismissedChannel::class
+     ],
+     version = 21,
+     autoMigrations = [
+@@ -111,4 +114,9 @@ abstract class AppDatabase : RoomDatabase() {
+      * Locally cached subscription feed
+      */
+     abstract fun feedDao(): SubscriptionsFeedDao
++
++    /**
++     * Dismissed channels
++     */
++    abstract fun dismissedChannelDao(): DismissedChannelDao
+ }
+diff --git a/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt b/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt
+new file mode 100644
+index 000000000..bbe0bb0df
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt
+@@ -0,0 +1,30 @@
++package com.github.libretube.db.dao
++
++import androidx.room.Dao
++import androidx.room.Delete
++import androidx.room.Insert
++import androidx.room.OnConflictStrategy
++import androidx.room.Query
++import com.github.libretube.db.obj.DismissedChannel
++import kotlinx.coroutines.flow.Flow
++
++@Dao
++interface DismissedChannelDao {
++    @Query("SELECT * FROM dismissedChannel ORDER BY shownName")
++    suspend fun getAll(): List<DismissedChannel>
++
++    @Query("SELECT * FROM dismissedChannel ORDER BY shownName")
++    fun getAllFlow(): Flow<List<DismissedChannel>>
++
++    @Insert(onConflict = OnConflictStrategy.REPLACE)
++    suspend fun insert(dismissedChannel: DismissedChannel)
++
++    @Insert(onConflict = OnConflictStrategy.REPLACE)
++    suspend fun insertAll(dismissedChannels: List<DismissedChannel>)
++
++    @Delete
++    suspend fun deleteDismissedChannel(customInstance: DismissedChannel)
++
++    @Query("DELETE FROM dismissedChannel")
++    suspend fun deleteAll()
++}
++
+diff --git a/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
+new file mode 100644
+index 000000000..a04eeeaea
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
+@@ -0,0 +1,16 @@
++package com.github.libretube.db.obj
++
++import android.os.Parcelable
++import androidx.room.ColumnInfo
++import androidx.room.Entity
++import androidx.room.PrimaryKey
++import kotlinx.parcelize.Parcelize
++import kotlinx.serialization.Serializable
++
++@Serializable
++@Entity(tableName = "dismissedChannel")
++@Parcelize
++class DismissedChannel(
++    @PrimaryKey var id: String = "",
++    @ColumnInfo var shownName: String = ""
++) : Parcelable
++
+-- 
+2.52.0
+

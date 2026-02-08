@@ -1,0 +1,71 @@
+---
+ .../github/libretube/helpers/PlayerHelper.kt  | 35 +++++++++++++++++++
+ .../github/libretube/helpers/SearchHelper.kt  | 11 ++++++
+ 2 files changed, 46 insertions(+)
+ create mode 100644 app/src/main/java/com/github/libretube/helpers/SearchHelper.kt
+
+diff --git a/app/src/main/java/com/github/libretube/helpers/PlayerHelper.kt b/app/src/main/java/com/github/libretube/helpers/PlayerHelper.kt
+index c21d54447..1d9874887 100644
+--- a/app/src/main/java/com/github/libretube/helpers/PlayerHelper.kt
++++ b/app/src/main/java/com/github/libretube/helpers/PlayerHelper.kt
+@@ -876,4 +876,39 @@ object PlayerHelper {
+             else -> false
+         }
+     }
++
++    val iconOnlyVideoBottomActionsEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.ICON_ONLY_VIDEO_BOTTOM_ACTIONS,
++            false
++        )
++
++    val showCountersEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.SHOW_COUNTERS,
++            true
++        )
++
++    val showLikeDislikeButtonsEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.SHOW_LIKE_DISLIKE,
++            true
++        )
++
++    val showCommentSectionEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.SHOW_COMMENT_SECTION,
++            true
++        )
++
++    val automaticallyExpandDescriptionEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.AUTOMATICALLY_EXPAND_DESCRIPTION,
++            false
++        )
++    val automaticallyExpandCommentsEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.AUTOMATICALLY_EXPAND_COMMENTS,
++            false
++        )
+ }
+diff --git a/app/src/main/java/com/github/libretube/helpers/SearchHelper.kt b/app/src/main/java/com/github/libretube/helpers/SearchHelper.kt
+new file mode 100644
+index 000000000..f09c93671
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/helpers/SearchHelper.kt
+@@ -0,0 +1,11 @@
++package com.github.libretube.helpers
++
++import com.github.libretube.constants.PreferenceKeys
++
++object SearchHelper {
++    val showShortsEnabled: Boolean
++        get() = PreferenceHelper.getBoolean(
++            PreferenceKeys.SHOW_SHORTS_STREAMS,
++            false
++        )
++}
++
+-- 
+2.52.0
+

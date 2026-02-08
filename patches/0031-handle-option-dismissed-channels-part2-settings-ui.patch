@@ -1,0 +1,428 @@
+---
+ .../github/libretube/constants/IntentData.kt  |  1 +
+ .../ui/adapters/DismissedChannelsAdapter.kt   | 70 +++++++++++++++++
+ .../dialogs/CreateDismissedChannelDialog.kt   | 75 +++++++++++++++++++
+ .../ui/dialogs/DismissedChannelsListDialog.kt | 53 +++++++++++++
+ .../ui/models/DismissedChannelsModel.kt       | 34 +++++++++
+ .../preferences/FlexTubeSpecificSettings.kt   |  9 +++
+ .../DismissedChannelsViewHolder.kt            |  8 ++
+ .../res/layout/dialog_dismissed_channel.xml   | 31 ++++++++
+ .../layout/dialog_dismissed_channels_list.xml | 10 +++
+ .../main/res/layout/dismissed_channel_row.xml | 42 +++++++++++
+ 10 files changed, 333 insertions(+)
+ create mode 100644 app/src/main/java/com/github/libretube/ui/adapters/DismissedChannelsAdapter.kt
+ create mode 100644 app/src/main/java/com/github/libretube/ui/dialogs/CreateDismissedChannelDialog.kt
+ create mode 100644 app/src/main/java/com/github/libretube/ui/dialogs/DismissedChannelsListDialog.kt
+ create mode 100644 app/src/main/java/com/github/libretube/ui/models/DismissedChannelsModel.kt
+ create mode 100644 app/src/main/java/com/github/libretube/ui/viewholders/DismissedChannelsViewHolder.kt
+ create mode 100644 app/src/main/res/layout/dialog_dismissed_channel.xml
+ create mode 100644 app/src/main/res/layout/dialog_dismissed_channels_list.xml
+ create mode 100644 app/src/main/res/layout/dismissed_channel_row.xml
+
+diff --git a/app/src/main/java/com/github/libretube/constants/IntentData.kt b/app/src/main/java/com/github/libretube/constants/IntentData.kt
+index 262e9cac4..34fc67d19 100644
+--- a/app/src/main/java/com/github/libretube/constants/IntentData.kt
++++ b/app/src/main/java/com/github/libretube/constants/IntentData.kt
+@@ -62,4 +62,5 @@ object IntentData {
+     const val customInstance = "customInstance"
+     const val audioOnly = "audioOnly"
+     const val category = "category"
++    const val dismissedChannel = "dismissedChannel"
+ }
+diff --git a/app/src/main/java/com/github/libretube/ui/adapters/DismissedChannelsAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/DismissedChannelsAdapter.kt
+new file mode 100644
+index 000000000..3068b4b7c
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/adapters/DismissedChannelsAdapter.kt
+@@ -0,0 +1,70 @@
++package com.github.libretube.ui.adapters
++
++import android.util.Log
++import android.view.LayoutInflater
++import android.view.ViewGroup
++import androidx.lifecycle.LifecycleOwner
++import androidx.lifecycle.lifecycleScope
++import androidx.recyclerview.widget.ListAdapter
++import com.github.libretube.api.MediaServiceRepository
++import com.github.libretube.databinding.DismissedChannelRowBinding
++import com.github.libretube.db.obj.DismissedChannel
++import com.github.libretube.extensions.TAG
++import com.github.libretube.helpers.ImageHelper
++import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
++import com.github.libretube.ui.models.DismissedChannelsModel
++import com.github.libretube.ui.viewholders.DismissedChannelsViewHolder
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.launch
++import kotlinx.coroutines.withContext
++
++class DismissedChannelsAdapter(
++    private val lifecycleOwner: LifecycleOwner,
++    private val viewModel: DismissedChannelsModel,
++    private val onClickInstance: (DismissedChannel) -> Unit,
++    private val onDeleteInstance: (DismissedChannel) -> Unit,
++) : ListAdapter<DismissedChannel, DismissedChannelsViewHolder>(
++    DiffUtilItemCallback()
++) {
++    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DismissedChannelsViewHolder {
++        val layoutInflater = LayoutInflater.from(parent.context)
++        val binding = DismissedChannelRowBinding.inflate(layoutInflater, parent, false)
++        return DismissedChannelsViewHolder(binding)
++    }
++
++    override fun onBindViewHolder(holder: DismissedChannelsViewHolder, position: Int) {
++        val dismissedChannel = getItem(position)!!
++
++        with (holder.binding) {
++            dismissedChannelName.text = dismissedChannel.shownName
++
++            lifecycleOwner.lifecycleScope.launch {
++                val response = try {
++                    withContext(Dispatchers.IO) {
++                        MediaServiceRepository.instance.getChannel(dismissedChannel.id)
++                    }
++                } catch (e: Exception) {
++                    Log.e(TAG(), e.stackTraceToString())
++                    return@launch
++                }
++                try {
++                    ImageHelper.loadImage(response.avatarUrl, channelImage, true)
++                }
++                catch (_: Exception) { }
++
++                if(response.name != dismissedChannel.shownName) {
++                    dismissedChannel.shownName = response.name ?: ""
++                    viewModel.add(dismissedChannel.id, response.name ?: "")
++                }
++            }
++
++            root.setOnClickListener {
++                onClickInstance(dismissedChannel)
++            }
++
++            deleteDismissedChannel.setOnClickListener {
++                onDeleteInstance.invoke(dismissedChannel)
++            }
++        }
++    }
++}
+diff --git a/app/src/main/java/com/github/libretube/ui/dialogs/CreateDismissedChannelDialog.kt b/app/src/main/java/com/github/libretube/ui/dialogs/CreateDismissedChannelDialog.kt
+new file mode 100644
+index 000000000..77216407a
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/dialogs/CreateDismissedChannelDialog.kt
+@@ -0,0 +1,75 @@
++package com.github.libretube.ui.dialogs
++
++import android.app.Dialog
++import android.content.DialogInterface
++import android.os.Bundle
++import android.util.Log
++import androidx.fragment.app.DialogFragment
++import androidx.fragment.app.activityViewModels
++import androidx.lifecycle.lifecycleScope
++import com.github.libretube.R
++import com.github.libretube.api.MediaServiceRepository
++import com.github.libretube.constants.IntentData
++import com.github.libretube.databinding.DialogCustomInstanceBinding
++import com.github.libretube.databinding.DialogDismissedChannelBinding
++import com.github.libretube.db.obj.CustomInstance
++import com.github.libretube.db.obj.DismissedChannel
++import com.github.libretube.extensions.TAG
++import com.github.libretube.extensions.parcelable
++import com.github.libretube.extensions.toastFromMainDispatcher
++import com.github.libretube.extensions.toastFromMainThread
++import com.github.libretube.ui.models.DismissedChannelsModel
++import com.google.android.material.dialog.MaterialAlertDialogBuilder
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.launch
++import kotlinx.coroutines.withContext
++import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
++import java.net.MalformedURLException
++import kotlin.getValue
++
++class CreateDismissedChannelDialog : DialogFragment() {
++    val viewModel: DismissedChannelsModel by activityViewModels()
++
++    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
++        val binding = DialogDismissedChannelBinding.inflate(layoutInflater)
++        arguments?.parcelable<DismissedChannel>(IntentData.dismissedChannel)?.let { initialInstance ->
++            binding.dismissedChannelId.setText(initialInstance.id)
++        }
++
++        binding.dismissedChannelId.setOnFocusChangeListener { _, hasFocus ->
++            if (hasFocus || !binding.dismissedChannelId.text.isNullOrEmpty()) return@setOnFocusChangeListener
++        }
++
++        return MaterialAlertDialogBuilder(requireContext())
++            .setTitle(R.string.dismissed_channel)
++            .setView(binding.root)
++            .setPositiveButton(R.string.add_dismissed_channel, null)
++            .setNegativeButton(R.string.cancel, null)
++            .show()
++            .apply {
++                getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener {
++                    val channelId = binding.dismissedChannelId.text.toString()
++                    lifecycleScope.launch {
++                        val response = try {
++                            withContext(Dispatchers.IO) {
++                                MediaServiceRepository.instance.getChannel(channelId)
++                            }
++                        } catch (e: Exception) {
++                            Log.e(TAG(), e.stackTraceToString())
++                            context.toastFromMainThread(R.string.invalid_channel_id)
++                            requireDialog().dismiss()
++                            return@launch
++                        }
++                        val channelName = response.name ?: ""
++                        try {
++                            viewModel.add(channelId, channelName)
++                            requireDialog().dismiss()
++                        } catch (e: Exception) {
++                            Log.e(TAG(), e.stackTraceToString())
++                            context.toastFromMainThread(R.string.invalid_channel_id)
++                        }
++                    }
++                }
++            }
++    }
++}
+diff --git a/app/src/main/java/com/github/libretube/ui/dialogs/DismissedChannelsListDialog.kt b/app/src/main/java/com/github/libretube/ui/dialogs/DismissedChannelsListDialog.kt
+new file mode 100644
+index 000000000..0df9fff8b
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/dialogs/DismissedChannelsListDialog.kt
+@@ -0,0 +1,53 @@
++package com.github.libretube.ui.dialogs
++
++import android.app.Dialog
++import android.content.DialogInterface
++import android.os.Bundle
++import androidx.fragment.app.DialogFragment
++import androidx.fragment.app.activityViewModels
++import androidx.lifecycle.lifecycleScope
++import androidx.navigation.fragment.findNavController
++import com.github.libretube.NavDirections
++import com.github.libretube.R
++import com.github.libretube.databinding.DialogDismissedChannelsListBinding
++import com.github.libretube.ui.adapters.DismissedChannelsAdapter
++import com.github.libretube.ui.models.DismissedChannelsModel
++import com.google.android.material.dialog.MaterialAlertDialogBuilder
++import kotlinx.coroutines.flow.collectLatest
++import kotlinx.coroutines.launch
++import kotlin.getValue
++
++class DismissedChannelsListDialog: DialogFragment() {
++    val viewModel: DismissedChannelsModel by activityViewModels()
++
++    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
++        val binding = DialogDismissedChannelsListBinding.inflate(layoutInflater)
++        val adapter = DismissedChannelsAdapter(
++            this,
++            viewModel,
++            onClickInstance = { },
++            onDeleteInstance = {
++                viewModel.delete(it)
++            }
++        )
++        binding.dismissedChannelsRecycler.adapter = adapter
++
++        lifecycleScope.launch {
++            viewModel.dismissedChannels.collectLatest {
++                adapter.submitList(it)
++            }
++        }
++
++        return MaterialAlertDialogBuilder(requireContext())
++            .setTitle(getString(R.string.dismissed_channels_list))
++            .setView(binding.root)
++            .setPositiveButton(getString(R.string.okay), null)
++            .setNegativeButton(getString(R.string.add_dismissed_channel), null)
++            .show()
++            .apply {
++                getButton(DialogInterface.BUTTON_NEGATIVE).setOnClickListener {
++                    CreateDismissedChannelDialog().show(childFragmentManager, null)
++                }
++            }
++    }
++}
+diff --git a/app/src/main/java/com/github/libretube/ui/models/DismissedChannelsModel.kt b/app/src/main/java/com/github/libretube/ui/models/DismissedChannelsModel.kt
+new file mode 100644
+index 000000000..8a091eba3
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/models/DismissedChannelsModel.kt
+@@ -0,0 +1,34 @@
++package com.github.libretube.ui.models
++
++import androidx.lifecycle.ViewModel
++import androidx.lifecycle.viewModelScope
++import com.github.libretube.db.DatabaseHolder.Database
++import com.github.libretube.db.obj.CustomInstance
++import com.github.libretube.db.obj.DismissedChannel
++import kotlinx.coroutines.Dispatchers
++import kotlinx.coroutines.flow.flowOn
++import kotlinx.coroutines.launch
++
++class DismissedChannelsModel : ViewModel() {
++    val dismissedChannels = Database.dismissedChannelDao().getAllFlow()
++        .flowOn(Dispatchers.IO)
++
++    fun add(channelId: String, channelName: String) {
++        if (channelId.isEmpty()) throw IllegalArgumentException()
++
++        viewModelScope.launch(Dispatchers.IO) {
++            Database.dismissedChannelDao()
++                .insert(
++                    DismissedChannel(
++                        channelId,
++                        channelName,
++                    )
++                )
++        }
++    }
++
++    fun delete(dismissedChannel: DismissedChannel) =
++        viewModelScope.launch(Dispatchers.IO) {
++            Database.dismissedChannelDao().deleteDismissedChannel(dismissedChannel)
++        }
++}
+diff --git a/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt b/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
+index 18d33696a..98dd936d8 100644
+--- a/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
++++ b/app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
+@@ -16,9 +16,18 @@ import com.github.libretube.ui.dialogs.RequireRestartDialog
+ import com.github.libretube.ui.models.InstancesModel
+ import com.google.android.material.dialog.MaterialAlertDialogBuilder
+ import kotlin.getValue
++import com.github.libretube.ui.dialogs.CreateCustomInstanceDialog
++import com.github.libretube.ui.dialogs.CustomInstancesListDialog
++import com.github.libretube.ui.dialogs.DismissedChannelsListDialog
+ 
+ class FlexTubeSpecificSettings : BasePreferenceFragment() {
+     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+         setPreferencesFromResource(R.xml.flextube_settings, rootKey)
++
++        val dismissedChannelList = findPreference<Preference>(PreferenceKeys.DISMISSED_CHANNELS_LIST)
++        dismissedChannelList?.setOnPreferenceClickListener {
++            DismissedChannelsListDialog().show(childFragmentManager, DismissedChannelsListDialog::class.java.name)
++            true
++        }
+     }
+ }
+diff --git a/app/src/main/java/com/github/libretube/ui/viewholders/DismissedChannelsViewHolder.kt b/app/src/main/java/com/github/libretube/ui/viewholders/DismissedChannelsViewHolder.kt
+new file mode 100644
+index 000000000..ec931e8ce
+--- /dev/null
++++ b/app/src/main/java/com/github/libretube/ui/viewholders/DismissedChannelsViewHolder.kt
+@@ -0,0 +1,8 @@
++package com.github.libretube.ui.viewholders
++
++import androidx.recyclerview.widget.RecyclerView
++import com.github.libretube.databinding.DismissedChannelRowBinding
++
++class DismissedChannelsViewHolder(
++    val binding: DismissedChannelRowBinding
++): RecyclerView.ViewHolder(binding.root)
+diff --git a/app/src/main/res/layout/dialog_dismissed_channel.xml b/app/src/main/res/layout/dialog_dismissed_channel.xml
+new file mode 100644
+index 000000000..b7b02cf4d
+--- /dev/null
++++ b/app/src/main/res/layout/dialog_dismissed_channel.xml
+@@ -0,0 +1,31 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    android:layout_width="wrap_content"
++    android:layout_height="wrap_content"
++    android:orientation="vertical"
++    android:paddingTop="8dp">
++
++    <com.google.android.material.textfield.TextInputLayout
++        style="@style/CustomDialogTextInputLayout"
++        android:hint="@string/exactly_channel_id">
++
++        <com.google.android.material.textfield.TextInputEditText
++            android:id="@+id/dismissedChannelId"
++            android:layout_width="match_parent"
++            android:layout_height="wrap_content"
++            android:inputType="text" />
++    </com.google.android.material.textfield.TextInputLayout>
++
++    <TextView
++        android:id="@+id/suggestionText"
++        android:layout_width="match_parent"
++        android:layout_height="wrap_content"
++        android:layout_marginStart="5dp"
++        android:layout_marginEnd="5dp"
++        android:layout_marginTop="5dp"
++        android:layout_marginBottom="0dp"
++        android:text="@string/suggestion_use_dismiss_button_on_channel_page"
++        android:textSize="18sp"
++        android:textColor="?android:attr/textColorSecondary"
++        android:paddingTop="4dp" />
++</LinearLayout>
+diff --git a/app/src/main/res/layout/dialog_dismissed_channels_list.xml b/app/src/main/res/layout/dialog_dismissed_channels_list.xml
+new file mode 100644
+index 000000000..3c0adaebe
+--- /dev/null
++++ b/app/src/main/res/layout/dialog_dismissed_channels_list.xml
+@@ -0,0 +1,10 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:layout_width="match_parent"
++    android:id="@+id/dismissed_channels_recycler"
++    android:paddingTop="10dp"
++    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
++    android:layout_height="match_parent">
++
++</androidx.recyclerview.widget.RecyclerView>
+diff --git a/app/src/main/res/layout/dismissed_channel_row.xml b/app/src/main/res/layout/dismissed_channel_row.xml
+new file mode 100644
+index 000000000..ebc17308a
+--- /dev/null
++++ b/app/src/main/res/layout/dismissed_channel_row.xml
+@@ -0,0 +1,42 @@
++<?xml version="1.0" encoding="utf-8"?>
++<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:layout_width="match_parent"
++    android:layout_height="wrap_content"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    android:orientation="horizontal"
++    tools:ignore="UseCompoundDrawables"
++    android:background="@drawable/rounded_ripple"
++    android:layout_marginHorizontal="16dp"
++    android:paddingHorizontal="8dp"
++    android:paddingVertical="2dp">
++
++    <com.google.android.material.imageview.ShapeableImageView
++        android:id="@+id/channel_image"
++        android:layout_width="45dp"
++        android:layout_height="45dp"
++        android:layout_gravity="center"
++        app:shapeAppearance="@style/CircleImageView" />
++
++    <TextView
++        android:id="@+id/dismissedChannelName"
++        android:paddingStart="10dp"
++        android:paddingEnd="5dp"
++        android:layout_height="wrap_content"
++        android:layout_width="0dp"
++        android:layout_weight="1"
++        android:layout_gravity="center"
++        android:layout_marginEnd="6dp"
++        android:ellipsize="end"
++        android:maxLines="1"
++        android:textStyle="bold"/>
++
++    <com.google.android.material.button.MaterialButton
++        style="?materialIconButtonFilledStyle"
++        android:id="@+id/deleteDismissedChannel"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_gravity="center"
++        app:icon="@drawable/ic_delete" />
++
++</LinearLayout>
+-- 
+2.52.0
+

@@ -1,0 +1,20 @@
+---
+ app/src/main/java/com/github/libretube/helpers/ThemeHelper.kt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/app/src/main/java/com/github/libretube/helpers/ThemeHelper.kt b/app/src/main/java/com/github/libretube/helpers/ThemeHelper.kt
+index 51fe3a2aa..b648b839e 100644
+--- a/app/src/main/java/com/github/libretube/helpers/ThemeHelper.kt
++++ b/app/src/main/java/com/github/libretube/helpers/ThemeHelper.kt
+@@ -110,7 +110,7 @@ object ThemeHelper {
+     fun getStyledAppName(context: Context): Spanned {
+         val colorPrimary = getThemeColor(context, androidx.appcompat.R.attr.colorPrimaryDark)
+         val hexColor = "#%06X".format(0xFFFFFF and colorPrimary)
+-        return "Libre<span  style='color:$hexColor';>Tube</span>"
++        return "Flex<span  style='color:$hexColor';>Tube</span>"
+             .parseAsHtml(HtmlCompat.FROM_HTML_MODE_COMPACT)
+     }
+ 
+-- 
+2.52.0
+

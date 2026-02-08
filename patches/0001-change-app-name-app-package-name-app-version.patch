@@ -1,0 +1,38 @@
+---
+ app/build.gradle.kts | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 39b345986..d3a2d3f0b 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -29,13 +29,13 @@ android {
+     compileSdk = 35
+ 
+     defaultConfig {
+-        applicationId = "com.github.libretube"
++        applicationId = "com.github.flextube"
+         minSdk = 26
+         targetSdk = 35
+-        versionCode = 65
+-        versionName = "0.30.0"
++        versionCode = 1
++        versionName = "0.30.0.0"
+         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+-        resValue("string", "app_name", "LibreTube")
++        resValue("string", "app_name", "FlexTube")
+     }
+ 
+     ksp {
+@@ -72,7 +72,7 @@ android {
+         getByName("debug") {
+             isDebuggable = true
+             applicationIdSuffix = ".debug"
+-            resValue("string", "app_name", "LibreTube Debug")
++            resValue("string", "app_name", "FlexTube Debug")
+         }
+     }
+ 
+-- 
+2.52.0
+

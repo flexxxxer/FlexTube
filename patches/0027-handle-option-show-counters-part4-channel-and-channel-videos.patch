@@ -1,0 +1,57 @@
+---
+ .../java/com/github/libretube/ui/adapters/VideosAdapter.kt  | 6 +++++-
+ .../com/github/libretube/ui/fragments/ChannelFragment.kt    | 5 +++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
+index 7c37a8057..2b69346aa 100644
+--- a/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
++++ b/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
+@@ -14,6 +14,7 @@ import com.github.libretube.db.DatabaseHolder
+ import com.github.libretube.extensions.toID
+ import com.github.libretube.helpers.ImageHelper
+ import com.github.libretube.helpers.NavigationHelper
++import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
+ import com.github.libretube.ui.base.BaseActivity
+ import com.github.libretube.ui.extensions.setFormattedDuration
+@@ -56,7 +57,10 @@ class VideosAdapter(
+ 
+         with(holder.binding) {
+             videoTitle.text = video.title
+-            videoInfo.text = TextUtils.formatViewsString(root.context, video.views ?: -1, video.uploaded)
++            videoInfo.text = if (PlayerHelper.showCountersEnabled)
++                TextUtils.formatViewsString(root.context, video.views ?: -1, video.uploaded)
++                else TextUtils.formatUploadDate(video.uploaded)
++            videoInfo.isVisible = videoInfo.text.isNotEmpty()
+ 
+             video.duration?.let { thumbnailDuration.setFormattedDuration(it, video.isShort, video.uploaded) }
+             watchProgress.setWatchProgressLength(videoId, video.duration ?: 0L)
+diff --git a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
+index addd86e06..3559a9001 100644
+--- a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
++++ b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
+@@ -24,6 +24,7 @@ import com.github.libretube.extensions.toastFromMainDispatcher
+ import com.github.libretube.helpers.ClipboardHelper
+ import com.github.libretube.helpers.ImageHelper
+ import com.github.libretube.helpers.NavigationHelper
++import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.ui.adapters.VideosAdapter
+ import com.github.libretube.ui.base.DynamicLayoutManagerFragment
+ import com.github.libretube.ui.dialogs.ShareDialog
+@@ -172,10 +173,10 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
+             binding.channelName
+                 .setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_verified, 0)
+         }
+-        binding.channelSubs.text = resources.getString(
++        binding.channelSubs.text = if (PlayerHelper.showCountersEnabled) resources.getString(
+             R.string.subscribers,
+             response.subscriberCount.formatShort()
+-        )
++        ) else ""
+         if (response.description.orEmpty().isBlank()) {
+             binding.channelDescription.isGone = true
+         } else {
+-- 
+2.52.0
+
