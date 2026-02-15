@@ -1,0 +1,44 @@
+---
+ .../21.json                                   | 26 +++++++++++++++++++
+ 1 file changed, 26 insertions(+)
+
+diff --git a/app/schemas/com.github.libretube.db.AppDatabase/21.json b/app/schemas/com.github.libretube.db.AppDatabase/21.json
+index 6fb67c359..7f669de9f 100644
+--- a/app/schemas/com.github.libretube.db.AppDatabase/21.json
++++ b/app/schemas/com.github.libretube.db.AppDatabase/21.json
+@@ -738,6 +738,32 @@
+         },
+         "indices": [],
+         "foreignKeys": []
++      },
++      {
++        "tableName": "dismissedChannel",
++        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `shownName` TEXT NOT NULL, PRIMARY KEY(`id`))",
++        "fields": [
++          {
++            "fieldPath": "id",
++            "columnName": "id",
++            "affinity": "TEXT",
++            "notNull": true
++          },
++          {
++            "fieldPath": "shownName",
++            "columnName": "shownName",
++            "affinity": "TEXT",
++            "notNull": true
++          }
++        ],
++        "primaryKey": {
++          "autoGenerate": false,
++          "columnNames": [
++            "id"
++          ]
++        },
++        "indices": [],
++        "foreignKeys": []
+       }
+     ],
+     "views": [],
+-- 
+2.53.0
+
