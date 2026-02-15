@@ -13,7 +13,7 @@ index 15c8c9153..7495124d2 100644
 -private const val GITHUB_API_URL = "https://api.github.com/repos/libre-tube/LibreTube/releases/latest"
 +private const val GITHUB_API_URL = "https://api.github.com/repos/flexxxxer/FlexTube/releases/latest"
  private const val SB_API_URL = "https://sponsor.ajay.app"
- private const val RYD_API_URL = "https://ryd-proxy.kavin.rocks/"
+ private const val RYD_API_URL = "https://ryd-proxy.kavin.rocks"
  private const val GOOGLE_API_KEY = "AIzaSyDyT5W0Jh49F30Pqqtyfdf7pDLFKLJoAnw"
 -- 
 2.52.0
