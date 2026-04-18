@@ -1,0 +1,51 @@
+---
+ .../23.json                                   | 28 ++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/app/schemas/com.github.libretube.db.AppDatabase/23.json b/app/schemas/com.github.libretube.db.AppDatabase/23.json
+index 443349d77..8caf2f5b4 100644
+--- a/app/schemas/com.github.libretube.db.AppDatabase/23.json
++++ b/app/schemas/com.github.libretube.db.AppDatabase/23.json
+@@ -778,6 +778,32 @@
+             "videoId"
+           ]
+         }
++      },
++      {
++        "tableName": "dismissedChannel",
++        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `shownName` TEXT NOT NULL, PRIMARY KEY(`id`))",
++        "fields": [
++          {
++            "fieldPath": "id",
++            "columnName": "id",
++            "affinity": "TEXT",
++            "notNull": true
++          },
++          {
++            "fieldPath": "shownName",
++            "columnName": "shownName",
++            "affinity": "TEXT",
++            "notNull": true
++          }
++        ],
++        "primaryKey": {
++          "autoGenerate": false,
++          "columnNames": [
++            "id"
++          ]
++        },
++        "indices": [],
++        "foreignKeys": []
+       }
+     ],
+     "setupQueries": [
+@@ -785,4 +811,4 @@
+       "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cb57390a6e9cf625630e58d426dc7f6a')"
+     ]
+   }
+-}
+\ No newline at end of file
++}
+-- 
+2.53.0
+
