@@ -3,10 +3,10 @@
  1 file changed, 6 insertions(+)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
-index a6d82e0c3..8c9450a4c 100644
+index 0d1d740ee..58d52c0c3 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
-@@ -437,6 +437,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), OnlinePlayerOptions {
+@@ -406,6 +406,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback
          _binding = FragmentPlayerBinding.bind(view)
          super.onViewCreated(view, savedInstanceState)
  
@@ -15,8 +15,8 @@ index a6d82e0c3..8c9450a4c 100644
 +        }
          // manually apply additional padding for edge-to-edge compatibility
          activity?.getSystemInsets()?.let { systemBars ->
-             with (binding.root) {
-@@ -1183,6 +1186,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), OnlinePlayerOptions {
+             with(binding.root) {
+@@ -1145,6 +1148,9 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback
          if (PlayerHelper.automaticallyExpandDescriptionEnabled) {
              binding.descriptionLayout.uncollapseDescription()
          }
@@ -27,5 +27,5 @@ index a6d82e0c3..8c9450a4c 100644
          binding.apply {
              ImageHelper.loadImage(streams.uploaderAvatar, binding.playerChannelImage, true)
 -- 
-2.52.0
+2.53.0
 

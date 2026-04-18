@@ -7,7 +7,7 @@
  create mode 100644 app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 
 diff --git a/app/src/main/java/com/github/libretube/db/AppDatabase.kt b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
-index fb07cb488..e9758f22b 100644
+index cf23aabe1..139b65b80 100644
 --- a/app/src/main/java/com/github/libretube/db/AppDatabase.kt
 +++ b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
 @@ -5,6 +5,7 @@ import androidx.room.Database
@@ -26,7 +26,7 @@ index fb07cb488..e9758f22b 100644
  import com.github.libretube.db.obj.Download
  import com.github.libretube.db.obj.DownloadChapter
  import com.github.libretube.db.obj.DownloadItem
-@@ -46,7 +48,8 @@ import com.github.libretube.db.obj.WatchPosition
+@@ -48,7 +50,8 @@ import com.github.libretube.db.obj.WatchPosition
          DownloadPlaylist::class,
          DownloadPlaylistVideosCrossRef::class,
          SubscriptionGroup::class,
@@ -34,9 +34,9 @@ index fb07cb488..e9758f22b 100644
 +        SubscriptionsFeedItem::class,
 +        DismissedChannel::class
      ],
-     version = 21,
+     version = 23,
      autoMigrations = [
-@@ -111,4 +114,9 @@ abstract class AppDatabase : RoomDatabase() {
+@@ -113,4 +116,9 @@ abstract class AppDatabase : RoomDatabase() {
       * Locally cached subscription feed
       */
      abstract fun feedDao(): SubscriptionsFeedDao
@@ -48,7 +48,7 @@ index fb07cb488..e9758f22b 100644
  }
 diff --git a/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt b/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt
 new file mode 100644
-index 000000000..bbe0bb0df
+index 000000000..707697390
 --- /dev/null
 +++ b/app/src/main/java/com/github/libretube/db/dao/DismissedChannelDao.kt
 @@ -0,0 +1,30 @@
@@ -82,10 +82,9 @@ index 000000000..bbe0bb0df
 +    @Query("DELETE FROM dismissedChannel")
 +    suspend fun deleteAll()
 +}
-+
 diff --git a/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 new file mode 100644
-index 000000000..a04eeeaea
+index 000000000..78cd35522
 --- /dev/null
 +++ b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 @@ -0,0 +1,16 @@
@@ -105,7 +104,5 @@ index 000000000..a04eeeaea
 +    @PrimaryKey var id: String = "",
 +    @ColumnInfo var shownName: String = ""
 +) : Parcelable
-+
 -- 
-2.52.0
-
+2.53.0

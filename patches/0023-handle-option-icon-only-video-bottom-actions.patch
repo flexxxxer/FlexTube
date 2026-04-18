@@ -3,7 +3,7 @@
  1 file changed, 12 insertions(+)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
-index 8c9450a4c..a1c86e5a1 100644
+index 58d52c0c3..cbf916616 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
 @@ -21,6 +21,7 @@ import android.view.SurfaceView
@@ -11,10 +11,10 @@ index 8c9450a4c..a1c86e5a1 100644
  import android.view.ViewGroup
  import android.view.ViewGroup.LayoutParams
 +import android.widget.LinearLayout
- import android.widget.Toast
  import androidx.activity.BackEventCompat
  import androidx.activity.OnBackPressedCallback
-@@ -34,6 +35,7 @@ import androidx.core.net.toUri
+ import androidx.activity.result.contract.ActivityResultContracts
+@@ -33,6 +34,7 @@ import androidx.core.net.toUri
  import androidx.core.os.bundleOf
  import androidx.core.os.postDelayed
  import androidx.core.view.WindowCompat
@@ -22,7 +22,7 @@ index 8c9450a4c..a1c86e5a1 100644
  import androidx.core.view.isGone
  import androidx.core.view.isInvisible
  import androidx.core.view.isVisible
-@@ -109,6 +111,7 @@ import com.github.libretube.util.OnlineTimeFrameReceiver
+@@ -107,6 +109,7 @@ import com.github.libretube.util.OnlineTimeFrameReceiver
  import com.github.libretube.util.PlayingQueue
  import com.github.libretube.util.TextUtils
  import com.github.libretube.util.TextUtils.toTimeInSeconds
@@ -30,7 +30,7 @@ index 8c9450a4c..a1c86e5a1 100644
  import com.google.android.material.snackbar.Snackbar
  import kotlinx.coroutines.CoroutineScope
  import kotlinx.coroutines.Dispatchers
-@@ -440,6 +443,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player), OnlinePlayerOptions {
+@@ -409,6 +412,15 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback
          if (!PlayerHelper.showCommentSectionEnabled) {
              binding.commentsToggle.visibility = View.GONE;
          }
@@ -45,7 +45,7 @@ index 8c9450a4c..a1c86e5a1 100644
 +        }
          // manually apply additional padding for edge-to-edge compatibility
          activity?.getSystemInsets()?.let { systemBars ->
-             with (binding.root) {
+             with(binding.root) {
 -- 
-2.52.0
+2.53.0
 

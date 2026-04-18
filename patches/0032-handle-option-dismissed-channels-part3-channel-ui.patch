@@ -1,10 +1,10 @@
 ---
- .../libretube/ui/fragments/ChannelFragment.kt | 30 +++++++++-----
- .../ui/sheets/ChannelOptionsBottomSheet.kt    | 39 +++++++++++++++++++
- 2 files changed, 59 insertions(+), 10 deletions(-)
+ .../libretube/ui/fragments/ChannelFragment.kt | 29 +++++++++++------
+ .../ui/sheets/ChannelOptionsBottomSheet.kt    | 32 +++++++++++++++++++
+ 2 files changed, 52 insertions(+), 9 deletions(-)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
-index 3559a9001..97a8e7c32 100644
+index 3559a9001..d72c9eeb0 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
 @@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
@@ -38,11 +38,10 @@ index 3559a9001..97a8e7c32 100644
  
      private var nextPages = Array<String?>(5) { null }
      private var isAppBarFullyExpanded: Boolean = true
-@@ -144,17 +149,22 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
-         ) {
+@@ -145,16 +150,22 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
              isSubscribed = it
          }
--
+ 
 -        binding.showMore.setOnClickListener {
 -            ChannelOptionsBottomSheet()
 -                .apply {
@@ -72,37 +71,30 @@ index 3559a9001..97a8e7c32 100644
  
          nextPages[0] = response.nextpage
 diff --git a/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt b/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
-index 49840b72a..b1fb7d494 100644
+index 49840b72a..e019c9001 100644
 --- a/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
 +++ b/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
-@@ -3,6 +3,8 @@ package com.github.libretube.ui.sheets
+@@ -3,6 +3,7 @@ package com.github.libretube.ui.sheets
  import android.os.Bundle
  import android.util.Log
  import androidx.core.os.bundleOf
 +import androidx.fragment.app.activityViewModels
-+import androidx.lifecycle.lifecycleScope
  import com.github.libretube.R
  import com.github.libretube.api.MediaServiceRepository
  import com.github.libretube.constants.IntentData
-@@ -13,8 +15,17 @@ import com.github.libretube.helpers.BackgroundHelper
+@@ -13,8 +14,11 @@ import com.github.libretube.helpers.BackgroundHelper
  import com.github.libretube.helpers.NavigationHelper
  import com.github.libretube.obj.ShareData
  import com.github.libretube.ui.dialogs.ShareDialog
 +import com.github.libretube.ui.models.DismissedChannelsModel
-+import kotlinx.coroutines.CompletableDeferred
  import kotlinx.coroutines.Dispatchers
-+import kotlinx.coroutines.flow.MutableStateFlow
 +import kotlinx.coroutines.flow.collectLatest
-+import kotlinx.coroutines.flow.filter
-+import kotlinx.coroutines.job
-+import kotlinx.coroutines.launch
  import kotlinx.coroutines.withContext
-+import okhttp3.internal.wait
 +import kotlin.getValue
  
  /**
   * Dialog with different options for a selected video.
-@@ -25,6 +36,8 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
+@@ -25,6 +29,8 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
      private lateinit var channelId: String
      private var channelName: String? = null
      private var subscribed: Boolean = false
@@ -111,7 +103,7 @@ index 49840b72a..b1fb7d494 100644
  
      override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
-@@ -32,6 +45,7 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
+@@ -32,6 +38,7 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
          channelId = arguments?.getString(IntentData.channelId)!!
          channelName = arguments?.getString(IntentData.channelName)
          subscribed = arguments?.getBoolean(IntentData.isSubscribed, false) ?: false
@@ -119,7 +111,7 @@ index 49840b72a..b1fb7d494 100644
  
          setTitle(channelName)
  
-@@ -42,6 +56,8 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
+@@ -42,6 +49,8 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
              R.string.playOnBackground
          )
          if (subscribed) optionsList.add(R.string.add_to_group)
@@ -128,20 +120,21 @@ index 49840b72a..b1fb7d494 100644
  
          setSimpleItems(optionsList.map { getString(it) }) { which ->
              when (optionsList[which]) {
-@@ -96,6 +112,29 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
+@@ -96,6 +105,29 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
                          Log.e(TAG(), e.toString())
                      }
                  }
++
 +                R.string.add_dismissed_channel -> {
 +                    try {
 +                        withContext(Dispatchers.IO) {
 +                            dismissedChannelsModel.add(channelId, channelName ?: "")
 +                        }
-+                    }
-+                    catch (e: Exception) {
++                    } catch (e: Exception) {
 +                        Log.e(TAG(), e.toString())
 +                    }
 +                }
++
 +                R.string.remove_dismissed_channel -> {
 +                    try {
 +                        dismissedChannelsModel.dismissedChannels.collectLatest { list ->
@@ -150,8 +143,7 @@ index 49840b72a..b1fb7d494 100644
 +                                dismissedChannelsModel.delete(dismissedChannel)
 +                            }
 +                        }
-+                    }
-+                    catch (e: Exception) {
++                    } catch (e: Exception) {
 +                        Log.e(TAG(), e.toString())
 +                    }
 +                }
@@ -159,5 +151,5 @@ index 49840b72a..b1fb7d494 100644
          }
      }
 -- 
-2.52.0
+2.53.0
 

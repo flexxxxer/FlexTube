@@ -3,10 +3,10 @@
  1 file changed, 34 insertions(+), 2 deletions(-)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/SearchResultFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/SearchResultFragment.kt
-index 4b7ddba1e..f8a17dc29 100644
+index 4b7ddba1e..5be2febe0 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/SearchResultFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/SearchResultFragment.kt
-@@ -13,26 +13,34 @@ import androidx.lifecycle.repeatOnLifecycle
+@@ -13,15 +13,20 @@ import androidx.lifecycle.repeatOnLifecycle
  import androidx.navigation.fragment.findNavController
  import androidx.navigation.fragment.navArgs
  import androidx.paging.LoadState
@@ -27,13 +27,7 @@ index 4b7ddba1e..f8a17dc29 100644
  import com.github.libretube.ui.models.SearchResultViewModel
  import com.github.libretube.util.TextUtils.toTimeInSeconds
  import kotlinx.coroutines.flow.collectLatest
- import kotlinx.coroutines.launch
-+import kotlinx.coroutines.runBlocking
- import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-+import okhttp3.internal.wait
- 
- class SearchResultFragment : DynamicLayoutManagerFragment(R.layout.fragment_search_result) {
-     private var _binding: FragmentSearchResultBinding? = null
+@@ -33,6 +38,7 @@ class SearchResultFragment : DynamicLayoutManagerFragment(R.layout.fragment_sear
      private val binding get() = _binding!!
      private val args by navArgs<SearchResultFragmentArgs>()
      private val viewModel by viewModels<SearchResultViewModel>()
@@ -41,7 +35,7 @@ index 4b7ddba1e..f8a17dc29 100644
  
      private val mainActivity get() = activity as MainActivity
      private var recyclerViewState: Parcelable? = null
-@@ -92,8 +100,32 @@ class SearchResultFragment : DynamicLayoutManagerFragment(R.layout.fragment_sear
+@@ -92,8 +98,34 @@ class SearchResultFragment : DynamicLayoutManagerFragment(R.layout.fragment_sear
  
          viewLifecycleOwner.lifecycleScope.launch {
              repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -52,21 +46,23 @@ index 4b7ddba1e..f8a17dc29 100644
 +                        var filterOutShortsPredicate: (ContentItem) -> Boolean = { _ -> true }
 +                        if (!SearchHelper.showShortsEnabled) {
 +                            filterOutShortsPredicate = { contentItem ->
-+                                when(contentItem.type) {
++                                when (contentItem.type) {
 +                                    StreamItem.TYPE_STREAM -> contentItem.isShort == false
 +                                    else -> true
 +                                }
 +                            }
 +                        }
-+                        var filterDismissedChannelsAndDismissedChannelsVideosPredicate: (ContentItem) -> Boolean = { _ -> true }
++                        var filterDismissedChannelsAndDismissedChannelsVideosPredicate: (ContentItem) -> Boolean =
++                            { _ -> true }
 +                        if (dismissedChannels.isNotEmpty()) {
-+                            filterDismissedChannelsAndDismissedChannelsVideosPredicate = { contentItem ->
-+                                when(contentItem.type) {
-+                                    StreamItem.TYPE_CHANNEL -> dismissedChannels.all { it.id != contentItem.url }
-+                                    StreamItem.TYPE_STREAM -> dismissedChannels.all { it.id != contentItem.uploaderUrl }
-+                                    else -> true
++                            filterDismissedChannelsAndDismissedChannelsVideosPredicate =
++                                { contentItem ->
++                                    when (contentItem.type) {
++                                        StreamItem.TYPE_CHANNEL -> dismissedChannels.all { it.id != contentItem.url }
++                                        StreamItem.TYPE_STREAM -> dismissedChannels.all { it.id != contentItem.uploaderUrl }
++                                        else -> true
++                                    }
 +                                }
-+                            }
 +                        }
 +                        val filteredContentItems = contentItems
 +                            .filter(filterOutShortsPredicate)
@@ -77,5 +73,5 @@ index 4b7ddba1e..f8a17dc29 100644
              }
          }
 -- 
-2.52.0
+2.53.0
 

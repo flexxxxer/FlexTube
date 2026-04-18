@@ -3,22 +3,22 @@
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
-index ef4f51fdd..f478af183 100644
+index cbf916616..3c4b6d1f9 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/PlayerFragment.kt
-@@ -1206,10 +1206,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), OnlinePlayerOptions {
-             ImageHelper.loadImage(streams.uploaderAvatar, binding.playerChannelImage, true)
+@@ -1171,10 +1171,10 @@ class PlayerFragment : Fragment(R.layout.fragment_player), CustomPlayerCallback
              playerChannelName.text = streams.uploader
              titleTextView.text = streams.title
+ 
 -            playerChannelSubCount.text = context?.getString(
-+            playerChannelSubCount.text = if(PlayerHelper.showCountersEnabled) context?.getString(
++            playerChannelSubCount.text = if (PlayerHelper.showCountersEnabled) context?.getString(
                  R.string.subscribers,
                  streams.uploaderSubscriberCount.formatShort()
 -            )
 +            ) else ""
-             player.isLive = streams.isLive
-             relPlayerDownload.isVisible = !streams.isLive
-         }
+             playerChannelSubCount.isVisible = streams.uploaderSubscriberCount >= 0
+ 
+             relPlayerDownload.isVisible = !streams.isLive && !isOffline
 -- 
-2.52.0
+2.53.0
 

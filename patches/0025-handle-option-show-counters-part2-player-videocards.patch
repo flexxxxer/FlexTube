@@ -1,21 +1,13 @@
 ---
- .../com/github/libretube/ui/adapters/VideoCardsAdapter.kt    | 5 +++++
- app/src/main/java/com/github/libretube/util/TextUtils.kt     | 4 ++++
+ .../com/github/libretube/ui/adapters/VideoCardsAdapter.kt    | 4 ++++
+ app/src/main/java/com/github/libretube/util/TextUtils.kt     | 5 +++++
  2 files changed, 9 insertions(+)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/adapters/VideoCardsAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/VideoCardsAdapter.kt
-index c82a78c7d..b7e5234a4 100644
+index a84a35019..92b4671f0 100644
 --- a/app/src/main/java/com/github/libretube/ui/adapters/VideoCardsAdapter.kt
 +++ b/app/src/main/java/com/github/libretube/ui/adapters/VideoCardsAdapter.kt
-@@ -16,6 +16,7 @@ import com.github.libretube.extensions.dpToPx
- import com.github.libretube.extensions.toID
- import com.github.libretube.helpers.ImageHelper
- import com.github.libretube.helpers.NavigationHelper
-+import com.github.libretube.helpers.PlayerHelper
- import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
- import com.github.libretube.ui.base.BaseActivity
- import com.github.libretube.ui.extensions.setFormattedDuration
-@@ -85,6 +86,10 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
+@@ -89,6 +89,10 @@ class VideoCardsAdapter(private val columnWidthDp: Float? = null) :
                  video.uploaded,
                  video.uploaderName
              )
@@ -27,20 +19,21 @@ index c82a78c7d..b7e5234a4 100644
              video.duration?.let {
                  thumbnailDuration.setFormattedDuration(
 diff --git a/app/src/main/java/com/github/libretube/util/TextUtils.kt b/app/src/main/java/com/github/libretube/util/TextUtils.kt
-index aabaee8fe..8287a5288 100644
+index aabaee8fe..33961f62f 100644
 --- a/app/src/main/java/com/github/libretube/util/TextUtils.kt
 +++ b/app/src/main/java/com/github/libretube/util/TextUtils.kt
-@@ -151,6 +151,10 @@ object TextUtils {
-         }
+@@ -152,6 +152,11 @@ object TextUtils {
          return listOfNotNull(uploader, viewsString, uploadDate).joinToString(SEPARATOR)
      }
+ 
 +    fun formatUploadDate(uploaded: Long, uploader: String? = null): String {
 +        val uploadDate = uploaded.takeIf { it > 0 }?.let { formatRelativeDate(it) }?.toString()
 +        return listOfNotNull(uploader, uploadDate).joinToString(SEPARATOR)
 +    }
- 
++
      /**
       * Timestamp of the current time which doesn't use any forbidden characters for file names like ':'
+      */
 -- 
-2.52.0
+2.53.0
 
