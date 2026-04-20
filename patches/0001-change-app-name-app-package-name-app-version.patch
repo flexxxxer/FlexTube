@@ -3,7 +3,7 @@
  1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/app/build.gradle.kts b/app/build.gradle.kts
-index 9fa414f38..445851ec9 100644
+index ddfc94a3a..6e7b5e42e 100644
 --- a/app/build.gradle.kts
 +++ b/app/build.gradle.kts
 @@ -29,13 +29,13 @@ android {
@@ -14,10 +14,10 @@ index 9fa414f38..445851ec9 100644
 +        applicationId = "com.github.flextube"
          minSdk = 26
          targetSdk = 36
--        versionCode = 65
--        versionName = "0.30.0"
+-        versionCode = 66
+-        versionName = "31.0"
 +        versionCode = 3
-+        versionName = "0.30.0.2"
++        versionName = "31.0.0"
          testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 -        resValue("string", "app_name", "LibreTube")
 +        resValue("string", "app_name", "FlexTube")
