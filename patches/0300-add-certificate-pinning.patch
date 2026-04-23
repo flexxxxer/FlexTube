@@ -1,0 +1,66 @@
+---
+ .../main/res/xml/network_security_config.xml  | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+
+diff --git a/app/src/main/res/xml/network_security_config.xml b/app/src/main/res/xml/network_security_config.xml
+index 07094ef0c..a8c6349a7 100644
+--- a/app/src/main/res/xml/network_security_config.xml
++++ b/app/src/main/res/xml/network_security_config.xml
+@@ -13,4 +13,53 @@
+                 tools:ignore="AcceptsUserCertificates" />
+         </trust-anchors>
+     </base-config>
++
++    <!-- cert pinning for used domains
++         mostly Google Trust Services (GTS) being used currently by YT
++         few services utilize Let's Encrypt (ISRG)
++         last update: 2026-04-24
++         GTS repository: https://pki.goog/repository
++         ISRG repository: https://letsencrypt.org/certificates
++         For better compatibility better to add cert pinning on BOTH ECDSA and RSA including current and upcoming
++         -->
++    <domain-config cleartextTrafficPermitted="false">
++        <domain includeSubdomains="true">youtu.be</domain> <!-- m.youtu.be, youtu.be -->
++        <domain includeSubdomains="true">youtube.com</domain> <!-- m.youtube.com, youtube.com -->
++        <domain includeSubdomains="true">ggpht.com</domain> <!-- yt3.ggpht.com yt4.ggpht.com -->
++        <domain includeSubdomains="true">googleusercontent.com</domain> <!-- yt3.googleusercontent.com -->
++        <domain includeSubdomains="true">googleapis.com</domain> <!-- youtubei.googleapis.com -->
++        <domain includeSubdomains="true">googlevideo.com</domain> <!-- video content delivery cdn -->
++        <domain includeSubdomains="true">piped.video</domain>
++        <domain includeSubdomains="true">returnyoutubedislikeapi.com</domain>
++        <domain includeSubdomains="true">sponsor.ajay.app</domain>
++        <pin-set expiration="2036-06-22">
++            <!-- currently used by GTS : R1, R2, R3, R4, GlobalSign R4 -->
++            <!-- TODO: expire at 2036-06-22 -->
++            <pin digest="SHA-256">hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</pin>
++            <pin digest="SHA-256">Vfd95BwDeSQo+NUYxVEEIlvkOlWY2SalKK1lPhzOx78=</pin>
++            <pin digest="SHA-256">QXnt2YHvdHR3tJYmQIr0Paosp6t/nggsEGD4QJZ3Q0g=</pin>
++            <pin digest="SHA-256">mEflZT5enoR1FuXLgYYGqnVEoZvmf9c2bVBpiOjYQ0c=</pin>
++
++            <!-- currently used by GTS : GlobalSign R4 -->
++            <!-- TODO: expire at 2038-01-19 -->
++            <pin digest="SHA-256">CLOmM1/OXvSPjw5UOYbAf9GKOxImEp9hhku9W90fHMk=</pin>
++        </pin-set>
++    </domain-config>
++
++    <domain-config>
++        <domain includeSubdomains="false">ryd-proxy.kavin.rocks</domain>
++        <pin-set expiration="2030-06-04">
++            <!-- currently used by ISRG : X1 -->
++            <!-- TODO: expire at 2030-06-04 -->
++            <pin digest="SHA-256">C5+lpZ7tcVwmwQIMcRtPbsQtWLABXhQzejna0wHFr8M=</pin>
++
++            <!-- currently used by ISRG : X2 -->
++            <!-- TODO: expire at 2035-09-04 -->
++            <pin digest="SHA-256">diGVwiVYbubAI3RW4hB9xU8e/CH2GnkuvVFZE8zmgzI=</pin>
++
++            <!-- currently used by ISRG : YE, YR. Expiration: N/A -->
++            <pin digest="SHA-256">sCkq5UWXjg+7mKu9lMhhYF5bGLsy7VI/UNW3tccdR7w=</pin>
++            <pin digest="SHA-256">fk6IOKit1ild5647BH06ujSIq5XbCgqlbYl6ANhhi88=</pin>
++        </pin-set>
++    </domain-config>
+ </network-security-config>
+\ No newline at end of file
+-- 
+2.53.0
+
