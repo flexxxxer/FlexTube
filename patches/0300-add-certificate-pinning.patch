@@ -30,7 +30,7 @@ index 07094ef0c..a8c6349a7 100644
 +        <domain includeSubdomains="true">returnyoutubedislikeapi.com</domain>
 +        <domain includeSubdomains="true">sponsor.ajay.app</domain>
 +        <pin-set expiration="2036-06-22">
-+            <!-- currently used by GTS : R1, R2, R3, R4, GlobalSign R4 -->
++            <!-- currently used by GTS : R1, R2, R3, R4 -->
 +            <!-- TODO: expire at 2036-06-22 -->
 +            <pin digest="SHA-256">hxqRlPTu1bMS/0DITB1SSu0vd4u/8l8TjPgfaAp63Gc=</pin>
 +            <pin digest="SHA-256">Vfd95BwDeSQo+NUYxVEEIlvkOlWY2SalKK1lPhzOx78=</pin>
