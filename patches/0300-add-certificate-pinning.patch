@@ -43,7 +43,7 @@ index 07094ef0c..a8c6349a7 100644
 +        </pin-set>
 +    </domain-config>
 +
-+    <domain-config>
++    <domain-config cleartextTrafficPermitted="false">
 +        <domain includeSubdomains="false">ryd-proxy.kavin.rocks</domain>
 +        <pin-set expiration="2030-06-04">
 +            <!-- currently used by ISRG : X1 -->
