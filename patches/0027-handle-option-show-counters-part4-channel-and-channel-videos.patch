@@ -4,7 +4,7 @@
  2 files changed, 8 insertions(+), 3 deletions(-)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
-index 7c37a8057..2b69346aa 100644
+index 4703242f4..45e8c8528 100644
 --- a/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
 +++ b/app/src/main/java/com/github/libretube/ui/adapters/VideosAdapter.kt
 @@ -14,6 +14,7 @@ import com.github.libretube.db.DatabaseHolder
@@ -12,10 +12,10 @@ index 7c37a8057..2b69346aa 100644
  import com.github.libretube.helpers.ImageHelper
  import com.github.libretube.helpers.NavigationHelper
 +import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.parcelable.PlayerData
  import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
  import com.github.libretube.ui.base.BaseActivity
- import com.github.libretube.ui.extensions.setFormattedDuration
-@@ -56,7 +57,10 @@ class VideosAdapter(
+@@ -57,7 +58,10 @@ class VideosAdapter(
  
          with(holder.binding) {
              videoTitle.text = video.title
@@ -23,7 +23,7 @@ index 7c37a8057..2b69346aa 100644
 +            videoInfo.text = if (PlayerHelper.showCountersEnabled)
 +                TextUtils.formatViewsString(root.context, video.views ?: -1, video.uploaded)
 +                else TextUtils.formatUploadDate(video.uploaded)
-+            videoInfo.isVisible = videoInfo.text.isNotEmpty()
++            videoInfo.isVisible = !videoInfo.text.isNullOrEmpty()
  
              video.duration?.let { thumbnailDuration.setFormattedDuration(it, video.isShort, video.uploaded) }
              watchProgress.setWatchProgressLength(videoId, video.duration ?: 0L)
@@ -53,5 +53,5 @@ index addd86e06..3559a9001 100644
              binding.channelDescription.isGone = true
          } else {
 -- 
-2.52.0
+2.54.0
 

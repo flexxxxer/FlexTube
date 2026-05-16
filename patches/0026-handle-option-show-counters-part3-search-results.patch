@@ -1,9 +1,9 @@
 ---
- .../libretube/ui/adapters/SearchResultsAdapter.kt      | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ .../github/libretube/ui/adapters/SearchResultsAdapter.kt | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/adapters/SearchResultsAdapter.kt b/app/src/main/java/com/github/libretube/ui/adapters/SearchResultsAdapter.kt
-index 4dc10d28a..eb7c913b9 100644
+index 275e9792e..0d4f29e70 100644
 --- a/app/src/main/java/com/github/libretube/ui/adapters/SearchResultsAdapter.kt
 +++ b/app/src/main/java/com/github/libretube/ui/adapters/SearchResultsAdapter.kt
 @@ -20,6 +20,7 @@ import com.github.libretube.extensions.formatShort
@@ -11,22 +11,21 @@ index 4dc10d28a..eb7c913b9 100644
  import com.github.libretube.helpers.ImageHelper
  import com.github.libretube.helpers.NavigationHelper
 +import com.github.libretube.helpers.PlayerHelper
+ import com.github.libretube.parcelable.PlayerData
  import com.github.libretube.ui.adapters.callbacks.DiffUtilItemCallback
  import com.github.libretube.ui.base.BaseActivity
- import com.github.libretube.ui.extensions.setFormattedDuration
-@@ -96,7 +97,10 @@ class SearchResultsAdapter(
- 
+@@ -98,7 +99,9 @@ class SearchResultsAdapter(
              thumbnailDuration.setFormattedDuration(item.duration, item.isShort, item.uploaded)
              videoTitle.text = item.title
+ 
 -            videoInfo.text = TextUtils.formatViewsString(root.context, item.views, item.uploaded)
 +            videoInfo.text = if (PlayerHelper.showCountersEnabled)
 +                TextUtils.formatViewsString(root.context, item.views, item.uploaded)
 +                else TextUtils.formatUploadDate(item.uploaded)
-+            videoInfo.isVisible = videoInfo.text.isNotEmpty()
+             videoInfo.isVisible = !videoInfo.text.isNullOrEmpty()
  
              channelContainer.isGone = item.uploaderAvatar.isNullOrEmpty()
-             channelName.text = item.uploaderName
-@@ -154,7 +158,9 @@ class SearchResultsAdapter(
+@@ -157,7 +160,9 @@ class SearchResultsAdapter(
              searchChannelName.text = item.name
  
              val subscribers = item.subscribers.formatShort()
@@ -38,5 +37,5 @@ index 4dc10d28a..eb7c913b9 100644
              } else if (item.subscribers >= 0) {
                  root.context.getString(R.string.subscribers, subscribers)
 -- 
-2.52.0
+2.54.0
 
