@@ -44,6 +44,8 @@ Verification info can also be found on [Telegram post](https://t.me/flextube/3).
 - [x] Ability to hide like & dislike buttons (opt-in)
 - [x] Ability to auto-expand description (opt-in)
 - [x] Ability to auto-expand comment section (opt-in)
+- [x] Certificate pinning for secure connections (more like security feature)
+  - [x] I hope in the future it will be part of LibreTube as well
 
 # Privacy Policy and Disclaimer
 The FlexTube project aims to provide a private, anonymous experience for using web-based media services. Therefore, the app does not collect any data without your consent.
