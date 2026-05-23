@@ -14,10 +14,10 @@ index f06f31bc9..f369ffd58 100644
 +        applicationId = "com.github.flextube"
          minSdk = 26
          targetSdk = 36
--        versionCode = 68
--        versionName = "31.2"
-+        versionCode = 6
-+        versionName = "31.2.0"
+-        versionCode = 69
+-        versionName = "31.3"
++        versionCode = 7
++        versionName = "31.3.0"
          testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 -        resValue("string", "app_name", "LibreTube")
 +        resValue("string", "app_name", "FlexTube")
