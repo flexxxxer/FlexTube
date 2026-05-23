@@ -1,12 +1,12 @@
 ---
- .../main/res/xml/network_security_config.xml  | 49 +++++++++++++++++++
- 1 file changed, 49 insertions(+)
+ .../main/res/xml/network_security_config.xml  | 50 +++++++++++++++++++
+ 1 file changed, 50 insertions(+)
 
 diff --git a/app/src/main/res/xml/network_security_config.xml b/app/src/main/res/xml/network_security_config.xml
-index 07094ef0c..a8c6349a7 100644
+index 07094ef0c..1fbce1977 100644
 --- a/app/src/main/res/xml/network_security_config.xml
 +++ b/app/src/main/res/xml/network_security_config.xml
-@@ -13,4 +13,53 @@
+@@ -13,4 +13,54 @@
                  tools:ignore="AcceptsUserCertificates" />
          </trust-anchors>
      </base-config>
@@ -29,6 +29,7 @@ index 07094ef0c..a8c6349a7 100644
 +        <domain includeSubdomains="true">piped.video</domain>
 +        <domain includeSubdomains="true">returnyoutubedislikeapi.com</domain>
 +        <domain includeSubdomains="true">sponsor.ajay.app</domain>
++        <domain includeSubdomains="false">pipedapi.kavin.rocks</domain>
 +        <pin-set expiration="2036-06-22">
 +            <!-- currently used by GTS : R1, R2, R3, R4 -->
 +            <!-- TODO: expire at 2036-06-22 -->
@@ -62,5 +63,5 @@ index 07094ef0c..a8c6349a7 100644
  </network-security-config>
 \ No newline at end of file
 -- 
-2.53.0
+2.54.0
 
