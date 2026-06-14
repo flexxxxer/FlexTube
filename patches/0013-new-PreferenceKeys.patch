@@ -1,12 +1,12 @@
 ---
- .../com/github/libretube/constants/PreferenceKeys.kt   | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ .../com/github/libretube/constants/PreferenceKeys.kt  | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/app/src/main/java/com/github/libretube/constants/PreferenceKeys.kt b/app/src/main/java/com/github/libretube/constants/PreferenceKeys.kt
-index 14f97d91f..1ef5ed680 100644
+index 32c54219e..4539f3aed 100644
 --- a/app/src/main/java/com/github/libretube/constants/PreferenceKeys.kt
 +++ b/app/src/main/java/com/github/libretube/constants/PreferenceKeys.kt
-@@ -143,4 +143,14 @@ object PreferenceKeys {
+@@ -143,4 +143,15 @@ object PreferenceKeys {
      // use the helper methods at PreferenceHelper to access these
      const val LAST_USER_SEEN_FEED_TIME = "last_watched_feed_time"
      const val LAST_REFRESHED_FEED_TIME = "last_refreshed_feed_time"
@@ -20,7 +20,8 @@ index 14f97d91f..1ef5ed680 100644
 +    const val SHOW_COMMENT_SECTION = "flextube_show_comment_section_toggle"
 +    const val AUTOMATICALLY_EXPAND_COMMENTS = "flextube_automatically_expand_comments_toggle"
 +    const val AUTOMATICALLY_EXPAND_DESCRIPTION = "flextube_automatically_expand_description_toggle"
++    const val REMEMBER_PLAYBACK_SPEED = "flextube_remember_playback_speed"
  }
 -- 
-2.52.0
+2.54.0
 

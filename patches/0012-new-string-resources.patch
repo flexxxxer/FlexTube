@@ -1,12 +1,12 @@
 ---
- app/src/main/res/values/strings.xml | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
+ app/src/main/res/values/strings.xml | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
 diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
-index c3cb9351d..91fe8d30f 100644
+index db59ad7bb..54b05b4fa 100644
 --- a/app/src/main/res/values/strings.xml
 +++ b/app/src/main/res/values/strings.xml
-@@ -578,4 +578,26 @@
+@@ -583,4 +583,27 @@
      <string name="also_clear_watch_positions">Also clear watch positions</string>
      <string name="import_temp_playlist">Import temporary playlist?</string>
      <string name="import_temp_playlist_summary">Do you want to create a new playlist named \'%1$s\'? The playlist will contain %2$d videos.</string>
@@ -32,7 +32,8 @@ index c3cb9351d..91fe8d30f 100644
 +    <string name="exactly_channel_id">Channel ID (exactly)</string>
 +    <string name="suggestion_use_dismiss_button_on_channel_page">Or just use \"Dismiss channel\" button on channel page</string>
 +    <string name="invalid_channel_id">Provided Channel Id is incorrect or non-existent</string>
++    <string name="flextube_remember_playback_speed">Remember playback speed</string>
  </resources>
 -- 
-2.52.0
+2.54.0
 

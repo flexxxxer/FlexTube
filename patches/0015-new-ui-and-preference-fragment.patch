@@ -1,10 +1,10 @@
 ---
- .../preferences/FlexTubeSpecificSettings.kt   | 24 +++++++
+ .../preferences/FlexTubeSpecificSettings.kt   | 24 ++++++
  .../libretube/ui/preferences/MainSettings.kt  |  3 +-
  app/src/main/res/navigation/nav_settings.xml  | 11 +++
- app/src/main/res/xml/flextube_settings.xml    | 68 +++++++++++++++++++
+ app/src/main/res/xml/flextube_settings.xml    | 86 +++++++++++++++++++
  app/src/main/res/xml/settings.xml             | 10 +++
- 5 files changed, 115 insertions(+), 1 deletion(-)
+ 5 files changed, 133 insertions(+), 1 deletion(-)
  create mode 100644 app/src/main/java/com/github/libretube/ui/preferences/FlexTubeSpecificSettings.kt
  create mode 100644 app/src/main/res/xml/flextube_settings.xml
 
@@ -83,10 +83,10 @@ index 6b546c7c3..3df301247 100644
 \ No newline at end of file
 diff --git a/app/src/main/res/xml/flextube_settings.xml b/app/src/main/res/xml/flextube_settings.xml
 new file mode 100644
-index 000000000..acccd8c64
+index 000000000..aa7503460
 --- /dev/null
 +++ b/app/src/main/res/xml/flextube_settings.xml
-@@ -0,0 +1,68 @@
+@@ -0,0 +1,86 @@
 +<?xml version="1.0" encoding="utf-8"?>
 +<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 +    xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -152,10 +152,27 @@ index 000000000..acccd8c64
 +            android:title="@string/automatically_expand_description"
 +            app:key="flextube_automatically_expand_description_toggle" />
 +
++        <SwitchPreferenceCompat
++            android:icon="@drawable/ic_headphones"
++            android:summaryOff="@string/disabled"
++            android:summaryOn="@string/enabled"
++            app:defaultValue="false"
++            app:disableDependentsState="true"
++            app:key="flextube_remember_playback_speed"
++            app:title="@string/flextube_remember_playback_speed" />
++
++        <com.github.libretube.ui.views.SliderPreference
++            android:dependency="flextube_remember_playback_speed"
++            android:icon="@drawable/ic_speed"
++            app:defValue="1.0"
++            app:key="playback_speed"
++            app:stepSize="0.05"
++            app:title="@string/playback_speed"
++            app:valueFrom="0.2"
++            app:valueTo="4.0" />
 +    </PreferenceCategory>
 +
 +</PreferenceScreen>
-\ No newline at end of file
 diff --git a/app/src/main/res/xml/settings.xml b/app/src/main/res/xml/settings.xml
 index d45867649..49de1c392 100644
 --- a/app/src/main/res/xml/settings.xml
@@ -178,5 +195,5 @@ index d45867649..49de1c392 100644
  
          <Preference
 -- 
-2.52.0
+2.54.0
 
