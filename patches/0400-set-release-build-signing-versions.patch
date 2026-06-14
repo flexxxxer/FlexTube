@@ -1,0 +1,20 @@
+---
+ app/build.gradle.kts | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index 8d35baf86..ea43d4230 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -56,6 +56,8 @@ android {
+                 storePassword = keystoreProperties["storePassword"] as String
+                 keyAlias = keystoreProperties["keyAlias"] as String
+                 keyPassword = keystoreProperties["keyPassword"] as String
++                enableV2Signing = false
++                enableV3Signing = true
+             }
+         }
+     }
+-- 
+2.54.0
+
