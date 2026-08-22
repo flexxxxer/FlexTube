@@ -7,7 +7,7 @@
  create mode 100644 app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 
 diff --git a/app/src/main/java/com/github/libretube/db/AppDatabase.kt b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
-index cf23aabe1..139b65b80 100644
+index efba6d81f..f218d3f58 100644
 --- a/app/src/main/java/com/github/libretube/db/AppDatabase.kt
 +++ b/app/src/main/java/com/github/libretube/db/AppDatabase.kt
 @@ -5,6 +5,7 @@ import androidx.room.Database
@@ -34,9 +34,9 @@ index cf23aabe1..139b65b80 100644
 +        SubscriptionsFeedItem::class,
 +        DismissedChannel::class
      ],
-     version = 23,
+     version = 25,
      autoMigrations = [
-@@ -113,4 +116,9 @@ abstract class AppDatabase : RoomDatabase() {
+@@ -115,4 +118,9 @@ abstract class AppDatabase : RoomDatabase() {
       * Locally cached subscription feed
       */
      abstract fun feedDao(): SubscriptionsFeedDao
@@ -84,7 +84,7 @@ index 000000000..707697390
 +}
 diff --git a/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 new file mode 100644
-index 000000000..78cd35522
+index 000000000..f1f339e55
 --- /dev/null
 +++ b/app/src/main/java/com/github/libretube/db/obj/DismissedChannel.kt
 @@ -0,0 +1,16 @@
@@ -105,4 +105,5 @@ index 000000000..78cd35522
 +    @ColumnInfo var shownName: String = ""
 +) : Parcelable
 -- 
-2.53.0
+2.55.0
+

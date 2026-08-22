@@ -1,10 +1,10 @@
 ---
- .../libretube/ui/fragments/ChannelFragment.kt | 28 ++++++++++------
- .../ui/sheets/ChannelOptionsBottomSheet.kt    | 32 +++++++++++++++++++
- 2 files changed, 51 insertions(+), 9 deletions(-)
+ .../libretube/ui/fragments/ChannelFragment.kt | 21 +++++++++++++
+ .../ui/sheets/ChannelOptionsBottomSheet.kt    | 31 +++++++++++++++++++
+ 2 files changed, 52 insertions(+)
 
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
-index 3559a9001..4389b4c97 100644
+index b24fd7087..57cfe3dc8 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
 @@ -7,6 +7,7 @@ import androidx.core.os.bundleOf
@@ -12,14 +12,15 @@ index 3559a9001..4389b4c97 100644
  import androidx.core.view.isVisible
  import androidx.fragment.app.Fragment
 +import androidx.fragment.app.activityViewModels
+ import androidx.fragment.app.viewModels
  import androidx.lifecycle.lifecycleScope
  import androidx.navigation.fragment.navArgs
- import androidx.recyclerview.widget.RecyclerView
-@@ -29,9 +30,11 @@ import com.github.libretube.ui.adapters.VideosAdapter
- import com.github.libretube.ui.base.DynamicLayoutManagerFragment
- import com.github.libretube.ui.dialogs.ShareDialog
+@@ -27,10 +28,12 @@ import com.github.libretube.helpers.ImageHelper
+ import com.github.libretube.helpers.NavigationHelper
+ import com.github.libretube.helpers.PlayerHelper
  import com.github.libretube.ui.extensions.setupSubscriptionButton
 +import com.github.libretube.ui.models.DismissedChannelsModel
+ import com.github.libretube.ui.models.ChannelViewModel
  import com.github.libretube.ui.sheets.ChannelOptionsBottomSheet
  import com.google.android.material.tabs.TabLayoutMediator
  import kotlinx.coroutines.Dispatchers
@@ -27,26 +28,18 @@ index 3559a9001..4389b4c97 100644
  import kotlinx.coroutines.launch
  import kotlinx.coroutines.withContext
  
-@@ -46,6 +49,7 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
+@@ -45,6 +48,7 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
      private var isLoading = true
  
      private lateinit var channelContentAdapter: ChannelContentAdapter
 +    private val dismissedChannelsModel: DismissedChannelsModel by activityViewModels()
  
-     private var nextPages = Array<String?>(5) { null }
      private var isAppBarFullyExpanded: Boolean = true
-@@ -145,16 +149,22 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
+     private val tabList = mutableListOf<ChannelTab>()
+@@ -145,6 +149,23 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
              isSubscribed = it
          }
  
--        binding.showMore.setOnClickListener {
--            ChannelOptionsBottomSheet()
--                .apply {
--                    arguments = bundleOf(
--                        IntentData.channelId to channelId,
--                        IntentData.channelName to channelName,
--                        IntentData.isSubscribed to isSubscribed
--                    )
 +        lifecycleScope.launch {
 +            dismissedChannelsModel.dismissedChannels.collectLatest { list ->
 +                val isDismissed = list.any { it.id == channelId }
@@ -61,14 +54,14 @@ index 3559a9001..4389b4c97 100644
 +                            )
 +                        }
 +                        .show(childFragmentManager)
-                 }
--                .show(childFragmentManager)
++                }
 +            }
-         }
- 
-         nextPages[0] = response.nextpage
++        }
+         binding.showMore.setOnClickListener {
+             ChannelOptionsBottomSheet()
+                 .apply {
 diff --git a/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt b/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
-index f2dd8dc67..5580b9d02 100644
+index f2dd8dc67..ca3293fe0 100644
 --- a/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
 +++ b/app/src/main/java/com/github/libretube/ui/sheets/ChannelOptionsBottomSheet.kt
 @@ -3,6 +3,7 @@ package com.github.libretube.ui.sheets
@@ -116,11 +109,10 @@ index f2dd8dc67..5580b9d02 100644
          setSimpleItems(optionsList.map { getString(it) }) { which ->
              when (optionsList[which]) {
                  R.string.share -> {
-@@ -101,6 +110,29 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
+@@ -101,6 +110,28 @@ class ChannelOptionsBottomSheet : BaseBottomSheet() {
                          Log.e(TAG(), e.toString())
                      }
                  }
-+
 +                R.string.add_dismissed_channel -> {
 +                    try {
 +                        withContext(Dispatchers.IO) {
@@ -147,5 +139,5 @@ index f2dd8dc67..5580b9d02 100644
          }
      }
 -- 
-2.54.0
+2.55.0
 

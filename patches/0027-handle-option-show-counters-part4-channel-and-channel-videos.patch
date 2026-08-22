@@ -28,18 +28,18 @@ index 4703242f4..45e8c8528 100644
              video.duration?.let { thumbnailDuration.setFormattedDuration(it, video.isShort, video.uploaded) }
              watchProgress.setWatchProgressLength(videoId, video.duration ?: 0L)
 diff --git a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
-index addd86e06..3559a9001 100644
+index d9d9af82c..b24fd7087 100644
 --- a/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
 +++ b/app/src/main/java/com/github/libretube/ui/fragments/ChannelFragment.kt
-@@ -24,6 +24,7 @@ import com.github.libretube.extensions.toastFromMainDispatcher
+@@ -25,6 +25,7 @@ import com.github.libretube.extensions.toastFromMainDispatcher
  import com.github.libretube.helpers.ClipboardHelper
  import com.github.libretube.helpers.ImageHelper
  import com.github.libretube.helpers.NavigationHelper
 +import com.github.libretube.helpers.PlayerHelper
- import com.github.libretube.ui.adapters.VideosAdapter
- import com.github.libretube.ui.base.DynamicLayoutManagerFragment
- import com.github.libretube.ui.dialogs.ShareDialog
-@@ -172,10 +173,10 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
+ import com.github.libretube.ui.extensions.setupSubscriptionButton
+ import com.github.libretube.ui.models.ChannelViewModel
+ import com.github.libretube.ui.sheets.ChannelOptionsBottomSheet
+@@ -173,10 +174,10 @@ class ChannelFragment : Fragment(R.layout.fragment_channel) {
              binding.channelName
                  .setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_verified, 0)
          }
@@ -53,5 +53,5 @@ index addd86e06..3559a9001 100644
              binding.channelDescription.isGone = true
          } else {
 -- 
-2.54.0
+2.55.0
 

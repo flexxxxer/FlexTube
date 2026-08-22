@@ -3,13 +3,13 @@
  1 file changed, 23 insertions(+)
 
 diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
-index db59ad7bb..54b05b4fa 100644
+index 69f05d804..c1b725df0 100644
 --- a/app/src/main/res/values/strings.xml
 +++ b/app/src/main/res/values/strings.xml
-@@ -583,4 +583,27 @@
-     <string name="also_clear_watch_positions">Also clear watch positions</string>
-     <string name="import_temp_playlist">Import temporary playlist?</string>
+@@ -587,4 +587,27 @@
      <string name="import_temp_playlist_summary">Do you want to create a new playlist named \'%1$s\'? The playlist will contain %2$d videos.</string>
+     <string name="comment_verified">Verified</string>
+     <string name="comment_pinned">Pinned</string>
 +    <string name="flextube_settings">FlexTube specific</string>
 +    <string name="flextube_settings_summary">FlexTube\'s specific settings</string>
 +    <string name="show_brainrot_videos">Show \"Shorts\"</string>
@@ -35,5 +35,5 @@ index db59ad7bb..54b05b4fa 100644
 +    <string name="flextube_remember_playback_speed">Remember playback speed</string>
  </resources>
 -- 
-2.54.0
+2.55.0
 
